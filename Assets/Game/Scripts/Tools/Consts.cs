@@ -16,7 +16,7 @@ public class Consts
 /// <summary>
 /// 面板类型
 /// </summary>
-public enum paneltype
+public enum PanelType
 {
 
 }
