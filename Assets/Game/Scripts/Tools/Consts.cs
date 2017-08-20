@@ -37,13 +37,13 @@ public enum CharacterType
 /// <summary>
 /// 卡牌花色
 /// </summary>
-public enum Colors
+public enum Colors //黑桃>红桃>梅花>方块
 {
-    King, //王
-    Club, //梅花
-    Heart, //红桃
-    Spade, //黑桃
-    Square //方片
+	Spade, //黑桃
+	Heart, //红桃
+	Club, //梅花
+	Square, //方片
+	King //王
 }
 
 /// <summary>
@@ -51,21 +51,21 @@ public enum Colors
 /// </summary>
 public enum Weight
 {
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King,
-    One,
-    Two,
-    SJoker,
-    BJoker
+	King = 0,
+	One = 1,
+	Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+    Six = 6,
+    Seven = 7,
+    Eight = 8,
+    Nine = 9,
+    Ten = 10,
+    Jack = 11,
+    Queen = 12,
+    SJoker = 14,
+    BJoker = 15
 }
 
 /// <summary>
