@@ -14,7 +14,9 @@ public class AvatarPoolEditor : Editor
 
         if (GUILayout.Button("Spawn"))
         {
-            demo.Spawn();
+            GamePlayer player = new GamePlayer();
+            player.avatar = AvatarModel.Reimu;
+            demo.Spawn(player);
         }
         else if (GUILayout.Button("DespawnAll"))
         {
@@ -59,11 +61,10 @@ public class AvatarPool : MonoBehaviour
         }
     }
 
-    public AvatarModel curModel;
-
-    public void Spawn()
+    public PlayerProvider Spawn(GamePlayer player)
     {
-        Spawn(curModel);
+        GameObject obj = Spawn(player.avatar);
+        return obj.GetComponent<PlayerProvider>();
     }
 
     GameObject Spawn(AvatarModel model)

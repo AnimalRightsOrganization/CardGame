@@ -4,7 +4,7 @@ node.js backend
 
 ## TODO:
 
-- [ ] 一键添加bot。
+- [x] 一键添加bot。
 - [ ] 用户GUI。
 - [ ] 记分牌。
 - [ ] 流程控制

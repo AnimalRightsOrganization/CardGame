@@ -94,7 +94,14 @@ public class LogicManager : MonoBehaviour
             {
                 gameid = i,
                 user_id = botDatabase.botList[resultArray[i]].user_id,
+                avatar = (AvatarModel)resultArray[i],
+                money = botDatabase.botList[resultArray[i]].money
             };
+
+            PlayerProvider scirpt = AvatarPool.instance.Spawn(player);
+            scirpt.mPlayer = player; //赋值
+            SpawnPoints.instance.SitDown(scirpt.transform); //入座
+
             playerList.Add(player);
         }
     }
@@ -116,7 +123,7 @@ public class LogicManager : MonoBehaviour
     {
         // roll一个数来确定庄家 ///TODO: 抢庄家
         int bankerid = UnityEngine.Random.Range(0, playerCount);
-        Debug.Log(bankerid);
+        Debug.Log(bankerid + " is lord");
 
         // 分配身份
         for (int i = 0; i < playerList.Count; i++)
@@ -172,9 +179,11 @@ public class LogicManager : MonoBehaviour
             for (int j = 0; j < playerCount; j++)
             {
                 // 从牌库抽一张牌
-                int index = Random.Range(1, libraryList.Count + 1);
+                int index = Random.Range(1, libraryList.Count);
+                Debug.Log("抽第" + index + "张，当前剩余" + libraryList.Count);
+
                 CardAttribute card = libraryList[index];
-                Debug.Log("当前牌库剩余" + libraryList.Count + "\n<color=" + (nextTurn == 0 ? "red" : "green") + ">抽到：" + card.cardid + "</color>");
+                Debug.Log("[Player" + nextTurn + "]抽到 " + card.cardid);
 
                 // 把牌放入玩家手中
                 playerList[nextTurn].handCardsList.Add(card);
@@ -183,6 +192,7 @@ public class LogicManager : MonoBehaviour
                 libraryList.Remove(card);
 
                 // 下一轮
+                Debug.Log("----- 下一轮 -----");
                 nextTurn++;
                 if (nextTurn > playerCount - 1)
                 {
