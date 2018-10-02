@@ -12,7 +12,11 @@ public class LogicManagerEditor : Editor
 
         LogicManager demo = (LogicManager)target;
         
-        if (GUILayout.Button("洗牌"))
+        if (GUILayout.Button("开局"))
+        {
+            demo.StartGame();
+        }
+        else if (GUILayout.Button("洗牌"))
         {
             demo.Shuffle();
         }
@@ -34,14 +38,16 @@ public class LogicManager : MonoBehaviour
     public const int cardCount = 52; //一副牌54张，去除大小王
     public int nextTurn = 0; //流程控制，当前出牌玩家id
 
+    BotDatabase botDatabase;
     [SerializeField, Range(2, 6)] int playerCount; //本局玩家数，开房间时确定
     [SerializeField] List<CardAttribute> libraryList = new List<CardAttribute>(); //牌库
     [SerializeField] List<CardAttribute> deskList = new List<CardAttribute>(); //桌上的牌
-    public List<GamePlayer> playerList = new List<GamePlayer>(); //手牌
+    [SerializeField] List<GamePlayer> playerList = new List<GamePlayer>(); //手牌
 
     void Awake()
     {
         instance = this;
+        botDatabase = Resources.Load<BotDatabase>("BotDatabase");
     }
 
     void Start()
@@ -49,15 +55,81 @@ public class LogicManager : MonoBehaviour
 
     }
 
+    // 读取数据库
+    void QueryPlayer()
+    {
+
+    }
+
+    // 创建房间，加入count个玩家
+    public void CreateRoom(int count)
+    {
+        playerCount = count;
+
+        ///TODO: 4位RoomID，由服务器分配
+        int roomId = Random.Range(1000, 10000);
+
+        ///TODO: 等待其他玩家加入
+        
+        // 从总玩家数max中，随机取count个数
+        int max = System.Enum.GetNames(typeof(AvatarModel)).GetLength(0);
+        int[] startArray = new int[max];
+        int[] resultArray = new int[playerCount]; //结果存放在里面
+        for (int i = 0; i < max; i++)
+        {
+            startArray[i] = i;
+        }
+        for (int i = 0; i < playerCount; i++)
+        {
+            int seed = Random.Range(0, startArray.Length - i); //从剩下的随机数里生成
+            resultArray[i] = startArray[seed];//赋值给结果数组
+            startArray[seed] = startArray[startArray.Length - i - 1]; //把随机数产生过的位置替换为未被选中的值。
+        }
+
+        // 创建当局玩家列表
+        playerList.Clear();
+        for (int i = 0; i < playerCount; i++)
+        {
+            GamePlayer player = new GamePlayer()
+            {
+                gameid = i,
+                user_id = botDatabase.botList[resultArray[i]].user_id,
+            };
+            playerList.Add(player);
+        }
+    }
+
+    // 添加一个玩家
+    void AddBot()
+    {
+
+    }
+
+    // 一个玩家离开
+    void RemoveBot()
+    {
+
+    }
+
     // 开局
     public void StartGame()
     {
-        // roll一个数来确定庄家
-        ///TODO: 抢庄家
+        // roll一个数来确定庄家 ///TODO: 抢庄家
         int bankerid = UnityEngine.Random.Range(0, playerCount);
+        Debug.Log(bankerid);
 
         // 分配身份
-
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            if (playerList[i].gameid == bankerid)
+            {
+                playerList[i].identity = Identity.LandLord;
+            }
+            else
+            {
+                playerList[i].identity = Identity.Farmer;
+            }
+        }
     }
 
     // 洗牌

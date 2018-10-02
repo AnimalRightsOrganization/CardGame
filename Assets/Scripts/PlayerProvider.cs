@@ -10,11 +10,6 @@ public class PlayerProvider : MonoBehaviour
     {
 
     }
-
-    void Update()
-    {
-
-    }
 }
 
 // 数据库玩家信息
@@ -23,16 +18,17 @@ public class Player
 {
     public string user_id; //用户名 nn_1234567890
     public AvatarModel avatar;
+    public long money;
     //public string nickname;
     //public string gender;
     //public string headimg;
-    //public string level;
-    ///public string money;
 }
 
 public enum AvatarModel
 {
-    kizuna = 0,
-    luna = 1,
-    miku = 2
+    Reimu = 0,
+    Marisa = 1,
+    Alice = 2,
+    Ellen = 3,
+    Anaberal = 4,
 }

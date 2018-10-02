@@ -6,8 +6,6 @@ using eeGames.Widget;
 
 public class wMainMenu : Widget
 {
-    [SerializeField, Range(2, 6)] int playerCount; //本局玩家数，开房间时确定
-
     [SerializeField] Button m_closeButton;
     [SerializeField] Button m_createButton;
     [SerializeField] Button m_joinButton;
@@ -41,33 +39,15 @@ public class wMainMenu : Widget
 
     void OnCreateButtonClick()
     {
-        ///TODO: 4位RoomID，由服务器分配
-        int roomId = Random.Range(1000, 10000);
-
-        ///TODO: 等待其他玩家加入
-        LogicManager.instance.playerList.Clear();
-        playerCount = Random.Range(2, 7);
-        for (int i = 0; i < playerCount; i++)
-        {
-            GamePlayer player = new GamePlayer()
-            {
-                gameid = i,
-                user_id = ""
-            };
-            LogicManager.instance.playerList.Add(player);
-        }
+        // 创建4人房间
+        LogicManager.instance.CreateRoom(4);
 
         WidgetManager.Instance.Pop(this.Id, false);
     }
 
     void OnJoinButtonClick()
     {
-        WidgetManager.Instance.Pop(this.Id, false);
-    }
-
-    void AddBot(int amount)
-    {
-
+        //WidgetManager.Instance.Pop(this.Id, false);
     }
 
     #endregion

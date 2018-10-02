@@ -11,7 +11,7 @@ public class Translate : MonoBehaviour
 
     void Awake()
     {
-        botDatabase = Resources.Load<BotDatabase>("ScriptableObject/BotDatabase");
+        botDatabase = Resources.Load<BotDatabase>("BotDatabase");
 
         for (int i = 0; i < toggles.Count; i++)
         {
