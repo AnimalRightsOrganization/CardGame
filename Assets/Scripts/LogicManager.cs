@@ -29,31 +29,35 @@ public class LogicManagerEditor : Editor
 
 public class LogicManager : MonoBehaviour
 {
+    public static LogicManager instance;
+
     public const int cardCount = 52; //一副牌54张，去除大小王
     public int nextTurn = 0; //流程控制，当前出牌玩家id
 
     [SerializeField, Range(2, 6)] int playerCount; //本局玩家数，开房间时确定
     [SerializeField] List<CardAttribute> libraryList = new List<CardAttribute>(); //牌库
     [SerializeField] List<CardAttribute> deskList = new List<CardAttribute>(); //桌上的牌
-    [SerializeField] List<GamePlayer> playerList = new List<GamePlayer>(); //手牌
-    
+    public List<GamePlayer> playerList = new List<GamePlayer>(); //手牌
+
+    void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
+    {
+
+    }
+
+    // 开局
+    public void StartGame()
     {
         // roll一个数来确定庄家
         ///TODO: 抢庄家
         int bankerid = UnityEngine.Random.Range(0, playerCount);
 
-        // 加入玩家，分配身份
-        for (int i = 0; i < playerCount; i++)
-        {
-            GamePlayer player = new GamePlayer()
-            {
-                gameid = i,
-                user_id = "",
-                identity = i == bankerid ? Identity.LandLord : Identity.Farmer,
-            };
-            playerList.Add(player);
-        }
+        // 分配身份
+
     }
 
     // 洗牌

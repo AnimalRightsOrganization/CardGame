@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using eeGames.Widget;
 
 /// <summary>
@@ -37,7 +37,6 @@ public class WidgetDatabase : ScriptableObject
         get { return database.Count; }
     }
 
-
     public WidgetData GameUI(int index)
     {
         return database.ElementAt(index);
@@ -53,7 +52,6 @@ public class WidgetDatabase : ScriptableObject
         return database;
     }
 }
-
 
 [System.Serializable]
 public class WidgetData
