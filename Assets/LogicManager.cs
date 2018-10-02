@@ -115,7 +115,7 @@ public class LogicManager : MonoBehaviour
             }
         }
 
-        // 如果牌库不足10张，执行洗牌
+        ///TODO: 如果牌库不足10张，执行洗牌
     }
 
     // 出牌
@@ -131,26 +131,34 @@ public class LogicManager : MonoBehaviour
     // 算分
     int CardValue(int _gameid)
     {
-        /*
-        //每三张相加。即随机去掉2张，剩下3张，并不重复的可能性。10种
-        //去掉1，再去掉2/3/4/5
-        //去掉2，再去掉3/4/5
-        //去掉3，再去掉4/5
-        //去掉4，再去掉5
-        //去掉5，null
-        int id0 = Random.Range(1, 5); //1,2,3,4
-        int id1 = Random.Range(id0 + 1, 6);
-
-        int result = 0;
-        for (int i = 0; i < 5; i++)
+        // 手牌分两组，一组三张，一组两张
+        // 三张这组加起来要是10/20/30
+        for (int i = 0; i < playerList[_gameid].handCardsList.Count - 2; i++)
         {
-            if (id0 == i || id1 == i)
+            // C53=>10种可能性，找出是否有三张加起来为10/20/30
+            for (int j = i + 1; j < playerList[_gameid].handCardsList.Count - 1; j++)
             {
-                continue;
-            }
-            else
-            {
-                result += playerList[_gameid].handCardsList[i].value;
+                for (int k = j + 1; k < playerList[_gameid].handCardsList.Count; k++)
+                {
+                    int add = playerList[_gameid].handCardsList[i].value
+                             + playerList[_gameid].handCardsList[j].value
+                             + playerList[_gameid].handCardsList[k].value;
+
+                    if(add % 10 == 0)
+                    {
+                        // 有牛，计算点数
+                        int result = 0;
+                        for (int x = 0; x < playerList[_gameid].handCardsList.Count; x++)
+                        {
+                            result += playerList[_gameid].handCardsList[x].value;
+                        }
+                        return result % 10;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
             }
         }
 
@@ -161,21 +169,7 @@ public class LogicManager : MonoBehaviour
         }
         //playerList[_gameid].handCardsList.Clear();
 
-        return result;
-        */
-
-        // 手牌分两组，一组三张，一组两张
-        // 三张这组加起来要是10/20/30
-        for (int i = 0; i < playerList[_gameid].handCardsList.Count; i++) //5个元素
-        {
-            // C53=>10种可能性，找出是否有三张加起来为10/20/30
-
-        }
-
-        // 两张这组加起来换算到1-10
-
-
-        return 0;
+        return -1;
     }
 }
 
@@ -191,7 +185,7 @@ public class CardAttribute
     // 根据id，序列化牌面属性
     public void SerializeCard()
     {
-        int value;
+        int value = 0;
         if (this.cardid <= 13)
         {
             this.colors = Colors.Spade;

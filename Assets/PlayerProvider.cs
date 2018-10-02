@@ -22,9 +22,9 @@ public class PlayerProvider : MonoBehaviour
 public class Player
 {
     public string user_id; //用户名 nn_1234567890
-    public string nickname;
-    public string gender;
-    public string headimg;
-    public string level;
-    public string money;
+    //public string nickname;
+    //public string gender;
+    //public string headimg;
+    //public string level;
+    ///public string money;
 }

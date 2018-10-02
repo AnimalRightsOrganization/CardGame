@@ -81,3 +81,6 @@ $RECYCLE.BIN/
 *.lnk
 *.lock
 *.ide
+*.ide-shm
+*.ide-wal
+.vs/CardGame/xs/UserPrefs.xml
