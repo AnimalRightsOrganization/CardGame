@@ -1,29 +1,23 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine;
 
 namespace eeGames.Widget
 {
     public class WidgetManager : wSingleton<WidgetManager>
     {
         // Find parent automatically based on tag
-        [SerializeField]
-        private Transform m_parent;
-        [SerializeField]
-        private List<Widget> m_stack;              // Holds Currently Active UI's
-        [SerializeField]
-        private List<Widget> m_pooledWidgets;
-
+        [SerializeField] Transform m_parent;
+        [SerializeField] List<Widget> m_stack; // Holds Currently Active UI's
+        [SerializeField] List<Widget> m_pooledWidgets;
 
         public override void Awake()
         {
             base.Awake();
-            m_parent = GameObject.FindGameObjectWithTag("Parent").transform;   // assign parent tag to canvas or panel which you want acts as parent
+            //m_parent = GameObject.FindGameObjectWithTag("Parent").transform;   // assign parent tag to canvas or panel which you want acts as parent
             if (m_parent == null) Debug.LogError("<color=red>Create new tag Parent & assign it to Canvas(parent):</color>");
             else m_stack = new List<Widget>();
         }
-
 
         #region Utility Methods
         LTDescr m_handler = null;
@@ -39,8 +33,7 @@ namespace eeGames.Widget
                 return;
             }
 
-
-            if (m_stack.Count > 1)      // if there are more than 1 widget
+            if (m_stack.Count > 1) // if there are more than 1 widget
                 m_stack[1].Show(isPlayShowTween);
 
             Widget top = m_stack[0];
@@ -62,12 +55,9 @@ namespace eeGames.Widget
                     m_pooledWidgets.Remove(top);
                     top.DestroyWidget();
                 }
-
-
             }
             m_stack.RemoveAt(0);
         }
-
 
         /// <summary>
         /// Hide Widget by Id to voilate LIFO Rule, its Handy in Some Situations
@@ -81,7 +71,6 @@ namespace eeGames.Widget
                 Debug.Log("<color=red>There is no more item in stack:</color>");
                 return;
             }
-
 
             if (m_stack.Count > 1)      // if there are more than 1 widget
                 m_stack[1].Show(isPlayShowTween);
@@ -110,27 +99,24 @@ namespace eeGames.Widget
                     m_pooledWidgets.Remove(top);
                     Destroy(top.gameObject);
                 }
-
-
             }
             m_stack.Remove(top);
         }
 
-      /// <summary>
-      /// Push Widget on top of stack
-      /// </summary>
-      /// <param name="id">Id of Widget</param>
-      /// <param name="isPlayHideTween">Play hide tween of previous widget</param>
-      /// <param name="lastActive">Is previous Widget Visible</param>
-      /// <param name="lastInteractive">Is previous Widget Interactable, in case of small panels</param>
-      /// <param name="firstChild">Set Widget as first child </param>
+        /// <summary>
+        /// Push Widget on top of stack
+        /// </summary>
+        /// <param name="id">Id of Widget</param>
+        /// <param name="isPlayHideTween">Play hide tween of previous widget</param>
+        /// <param name="lastActive">Is previous Widget Visible</param>
+        /// <param name="lastInteractive">Is previous Widget Interactable, in case of small panels</param>
+        /// <param name="firstChild">Set Widget as first child </param>
         public void Push(WidgetName id, bool isPlayHideTween = true, bool lastActive = false, bool lastInteractive = false, bool firstChild = false)
         {
-
-            if (m_stack.Count >= 1) 
-            { 
+            if (m_stack.Count >= 1)
+            {
                 if (!lastActive) { m_stack[0].Hide(isPlayHideTween); }
-                m_stack[0].CanvasGroup.interactable = lastInteractive; 
+                m_stack[0].CanvasGroup.interactable = lastInteractive;
             }
 
             Widget widget = GetPooledWidget(id);
@@ -153,7 +139,6 @@ namespace eeGames.Widget
             widget.Init();
             widget.Show();
             m_stack.Insert(0, widget);
-
         }
 
         /// <summary>
@@ -161,7 +146,7 @@ namespace eeGames.Widget
         /// </summary>
         public void UnWindStack()
         {
-            for (int i = 0; i < m_pooledWidgets.Count; i++ )
+            for (int i = 0; i < m_pooledWidgets.Count; i++)
             {
                 m_pooledWidgets[i].DestroyWidget();
             }
@@ -187,16 +172,14 @@ namespace eeGames.Widget
         public Widget GetWidget(WidgetName name)
         {
             return m_stack.Find(id => id.Id == name);
-
         }
+
         #endregion
-
-
 
         /// <summary>
         /// These Methods used by this class no concern for user
         /// </summary>
-        
+
         #region Helper Methods 
 
         private Widget GetPooledWidget(WidgetName name)
@@ -217,6 +200,7 @@ namespace eeGames.Widget
                 return m_database;
             }
         }
+
         #endregion
     }
 }
