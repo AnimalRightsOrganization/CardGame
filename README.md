@@ -1,3 +1,5 @@
+[![Stories in Ready](https://badge.waffle.io/setsuodu/CardGame.png?label=ready&title=Ready)](https://waffle.io/setsuodu/CardGame)
+
 # CardGame
 
 node.js backend
