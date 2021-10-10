@@ -43,6 +43,7 @@ public class SpawnPoints : MonoBehaviour
                 //Debug.Log(player.GetComponent<PlayerProvider>().mPlayer.avatar + "坐到" + item.Key + "号位");
                 seatDic[item.Key] = player;
                 player.transform.position = seatPoints[item.Key];
+                player.SetParent(this.transform);
                 return;
             }
         }
