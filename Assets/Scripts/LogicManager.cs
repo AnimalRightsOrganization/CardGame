@@ -50,17 +50,6 @@ public class LogicManager : MonoBehaviour
         botDatabase = Resources.Load<BotDatabase>("BotDatabase");
     }
 
-    void Start()
-    {
-
-    }
-
-    // 读取数据库
-    void QueryPlayer()
-    {
-
-    }
-
     // 创建房间，加入count个玩家
     public void CreateRoom(int count)
     {
@@ -98,24 +87,12 @@ public class LogicManager : MonoBehaviour
                 money = botDatabase.botList[resultArray[i]].money
             };
 
-            PlayerProvider scirpt = AvatarPool.instance.Spawn(player);
-            scirpt.mPlayer = player; //赋值
-            SpawnPoints.instance.SitDown(scirpt.transform); //入座
+            //PlayerProvider scirpt = AvatarPool.instance.Spawn(player);
+            //scirpt.mPlayer = player; //赋值
+            //SpawnPoints.instance.SitDown(scirpt.transform); //入座
 
             playerList.Add(player);
         }
-    }
-
-    // 添加一个玩家
-    void AddBot()
-    {
-
-    }
-
-    // 一个玩家离开
-    void RemoveBot()
-    {
-
     }
 
     // 开局
