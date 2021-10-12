@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using MongoDB.Driver.Core;
 using MongoDB.Driver.Linq;
 
 namespace WinFormsApp1
@@ -12,7 +13,7 @@ namespace WinFormsApp1
     public class User
     {
         //[BsonId]
-        //public ObjectId Id { get; set; }
+        public ObjectId Id { get; set; }
         public string name { get; set; }
         public int number { get; set; }
 
@@ -25,6 +26,11 @@ namespace WinFormsApp1
             //this.Id = id;
             this.name = name;
             this.number = number;
+        }
+
+        public override string ToString()
+        {
+            return $"name={name}, number={number}";
         }
     }
 
@@ -169,11 +175,76 @@ namespace WinFormsApp1
 
         }
 
+        //string connectionString = "mongodb://localhost";
+        //string connectionString = "mongodb+srv://<username>:<password>@<cluster-address>/test?w=majority";
+        string connectionString = "mongodb://localhost:27017/?readPreference=primary&directConnection=true&ssl=false";
+
         private void Button1_Click(object sender, System.EventArgs e)
         {
-            //string connectionString = "mongodb://localhost";
-            string connectionString = "mongodb://localhost:27017/?readPreference=primary&directConnection=true&ssl=false";
-            //string connectionString = "mongodb+srv://<username>:<password>@<cluster-address>/test?w=majority";
+            TestQuery();
+        }
+
+        private void button2_Click(object sender, System.EventArgs e)
+        {
+            Debug.Print($"启动服务器");
+
+            TcpChatServer.TCPChatServer.Run();
+        }
+
+        private void InsertUser()
+        {
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase("stickerDB"); //数据库
+            var collection = database.GetCollection<BsonDocument>("Users"); //表
+            //var filter = Builders<User>.Filter.Gte("number", 10); //查询条件
+            //var result = collection.Find(filter).ToList();
+            //Debug.Print($"QueryUser---{result.Count}");
+
+            User p = new User();
+            p.name = "xxx";
+            p.number = 100;
+
+            //Insert Data
+            collection.InsertOne(p.ToBsonDocument());
+        }
+
+        private void DeleteUser()
+        {
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase("stickerDB");
+            var collection = database.GetCollection<BsonDocument>("Users");
+
+            // 查询集合中的文档
+            var filter0 = new BsonDocument();
+            var search = Task.Run(async () => await collection.Find(filter0).ToListAsync()).Result;
+            Debug.Print($"search={search.Count}");
+
+            var deleteFilter = Builders<BsonDocument>.Filter.Eq("number", 100);
+            var result = collection.DeleteOne(deleteFilter);
+            Debug.Print($"result={result.DeletedCount}");
+        }
+
+        private void UpdateUser()
+        {
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase("stickerDB"); //数据库
+            var collection = database.GetCollection<BsonDocument>("Users"); //表
+
+            //var query = new BsonDocument
+            //{
+            //    { "name", "Henry" }, 
+            //    { "number", 14 },
+            //};
+
+            //Update Data
+            var filter = Builders<BsonDocument>.Filter.Eq("number", 14);
+            var update = Builders<BsonDocument>.Update.Set("number", 13);
+            var result = collection.UpdateOne(filter, update);
+            //Debug.Print($"Update result={result.ModifiedCount}");
+        }
+
+        private void QueryUser()
+        {
             Debug.Print($"connect to: {connectionString}");
 
             var client = new MongoClient(connectionString);
@@ -202,7 +273,7 @@ namespace WinFormsApp1
             // 循环遍历输出
             search2.ForEach(p =>
             {
-                Debug.Print($"姓名：{p["name"]}，球衣号码：{p["number"]}");
+                //Debug.Print($"姓名：{p["name"]}，球衣号码：{p["number"]}");
             });
 
             //$lt    <   (less  than)
@@ -215,11 +286,30 @@ namespace WinFormsApp1
             Debug.Print($"result={result.CountDocuments()}");
         }
 
-        private void button2_Click(object sender, System.EventArgs e)
+        private void TestQuery()
         {
-            Debug.Print($"启动服务器");
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase("stickerDB"); //数据库
+            var collection = database.GetCollection<User>("Users"); //表
 
-            TcpChatServer.TCPChatServer.Run();
+            // 表总计数
+            //var filter = new BsonDocument();
+            //var search2 = Task.Run(async () => await collection.Find(filter).ToListAsync()).Result;
+            //Debug.Print($"search2={search2.Count}");
+
+            // 查询表中第一条元素
+            //var firstDocument = collection.Find(new BsonDocument()).FirstOrDefault();
+            //Debug.Print(firstDocument.ToString()); //打印出指定User
+
+            // 单条件查询
+            var filter = Builders<User>.Filter.Eq(x => x.number, 10);
+            var result = Task.Run(async () => await collection.Find(filter).ToListAsync()).Result;
+            Debug.Print($"result={result.Count}");
+
+            // 多条件查询
+            //var filter = Builders<User>.Filter.Eq(x => x.name, "Henry") & Builders<User>.Filter.Eq(x => x.number, 13);
+            //var result = Task.Run(async () => await collection.Find(filter).ToListAsync()).Result;
+            //Debug.Print($"result={result.Count}");
         }
 
         #endregion
