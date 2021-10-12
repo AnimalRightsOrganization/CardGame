@@ -65,7 +65,6 @@ namespace WinFormsApp1
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.titleLabel = new System.Windows.Forms.Label();
-            this.queryBtn = new System.Windows.Forms.Button();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,10 +72,12 @@ namespace WinFormsApp1
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.startServerBtn = new System.Windows.Forms.Button();
+            this.insertBtn = new System.Windows.Forms.Button();
             this.deleteBtn = new System.Windows.Forms.Button();
             this.updateBtn = new System.Windows.Forms.Button();
-            this.insertBtn = new System.Windows.Forms.Button();
+            this.queryBtn = new System.Windows.Forms.Button();
+            this.startServerBtn = new System.Windows.Forms.Button();
+            this.shutDownBtn = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -187,20 +188,31 @@ namespace WinFormsApp1
             this.startServerBtn.Name = "startServerBtn";
             this.startServerBtn.Size = new System.Drawing.Size(94, 23);
             this.startServerBtn.TabIndex = 5;
-            this.startServerBtn.Text = "Start Server";
+            this.startServerBtn.Text = "启动服务器";
             this.startServerBtn.UseVisualStyleBackColor = true;
             this.startServerBtn.Click += new System.EventHandler(this.StartServerBtn_Click);
+            // 
+            // shutDownBtn
+            // 
+            this.shutDownBtn.Location = new System.Drawing.Point(132, 386);
+            this.shutDownBtn.Name = "shutDownBtn";
+            this.shutDownBtn.Size = new System.Drawing.Size(94, 23);
+            this.shutDownBtn.TabIndex = 6;
+            this.shutDownBtn.Text = "关闭服务器";
+            this.shutDownBtn.UseVisualStyleBackColor = true;
+            this.shutDownBtn.Click += new System.EventHandler(this.ShutDownBtn_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(367, 665);
+            this.Controls.Add(this.shutDownBtn);
             this.Controls.Add(this.insertBtn);
-            this.Controls.Add(this.updateBtn);
             this.Controls.Add(this.deleteBtn);
-            this.Controls.Add(this.startServerBtn);
+            this.Controls.Add(this.updateBtn);
             this.Controls.Add(this.queryBtn);
+            this.Controls.Add(this.startServerBtn);
             this.Controls.Add(this.titleLabel);
             this.Name = "MainForm";
             this.Text = "Winform+NetCore3.1+MongoDB";
@@ -355,9 +367,16 @@ namespace WinFormsApp1
 
         private void StartServerBtn_Click(object sender, System.EventArgs e)
         {
-            Debug.Print($"启动服务器");
+            Debug.Print("启动服务器");
 
             TcpChatServer.TCPChatServer.Run();
+        }
+
+        private void ShutDownBtn_Click(object sender, System.EventArgs e)
+        {
+            Debug.Print("关闭服务器");
+
+            TcpChatServer.TCPChatServer.Stop();
         }
 
         #endregion
@@ -375,5 +394,6 @@ namespace WinFormsApp1
         private Button updateBtn;
         private Button queryBtn;
         private Button startServerBtn;
+        private Button shutDownBtn;
     }
 }

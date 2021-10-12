@@ -3,13 +3,17 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using TcpClient = NetCoreServer.TcpClient;
-//using Debug = System.Diagnostics.Debug;
 using Debug = UnityEngine.Debug;
 
 namespace TcpChatClient
 {
     public class ChatClient : TcpClient
     {
+        // 线程中，不支持操作UI。
+        //public Action m_OnConnected_Callback;
+        //public Action m_OnDisconnected_Callback;
+        //public Action<SocketError> m_OnNetworkError_Callback;
+
         public ChatClient(string address, int port) : base(address, port) {}
 
         public void DisconnectAndStop()
@@ -23,11 +27,15 @@ namespace TcpChatClient
         protected override void OnConnected()
         {
             Debug.Log($"Chat TCP client connected a new session with Id {Id}");
+            //m_OnConnected_Callback?.Invoke();
+            //EventManager.Trigger(1);
         }
 
         protected override void OnDisconnected()
         {
             Debug.Log($"Chat TCP client disconnected a session with Id {Id}");
+            //m_OnDisconnected_Callback?.Invoke();
+            //EventManager.Trigger(0);
 
             // Wait for a while...
             Thread.Sleep(1000);
@@ -46,6 +54,7 @@ namespace TcpChatClient
         protected override void OnError(SocketError error)
         {
             Debug.Log($"Chat TCP client caught an error with code {error}");
+            //m_OnNetworkError_Callback?.Invoke(error);
         }
 
         private bool _stop;
