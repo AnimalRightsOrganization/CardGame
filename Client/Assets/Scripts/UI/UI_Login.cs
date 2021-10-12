@@ -35,21 +35,38 @@ public class UI_Login : UIBase
         client.DisconnectAndStop();
     }
 
+    private Queue<int> _actions = new Queue<int>();
+
+    void Update()
+    {
+        if (_actions.Count > 0)
+        {
+            var id = _actions.Dequeue();
+            //Debug.Log($"Update: {id}");
+
+            switch (id)
+            {
+                case 0:
+                    Debug.Log("<color=red>Disconnected</color>");
+                    m_Title.text = "Connecting";
+                    m_InfoPanel.SetActive(true);
+                    break;
+                case 1:
+                    Debug.Log("<color=green>Connected</color>");
+                    m_Title.text = "跑得快";
+                    m_InfoPanel.SetActive(false);
+                    break;
+            }
+        }
+    }
+
     void OnNetCallback(int id)
     {
-        switch (id)
+        lock (_actions)
         {
-            case 0:
-                Debug.Log("<color=red>Disconnected</color>");
-                //m_Title.text = "Connecting";
-                //m_InfoPanel.SetActive(true);
-                break;
-            case 1:
-                Debug.Log("<color=green>Connected</color>");
-                //m_Title.text = "跑得快";
-                //m_InfoPanel.SetActive(false);
-                break;
+            _actions.Enqueue(id);
         }
+        //Debug.Log($"OnNetCallback: {id}");
     }
 
     void DoConnect()
