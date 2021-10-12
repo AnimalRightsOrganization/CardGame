@@ -3,6 +3,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using TcpClient = NetCoreServer.TcpClient;
+//using Debug = System.Diagnostics.Debug;
+using Debug = UnityEngine.Debug;
 
 namespace TcpChatClient
 {
@@ -20,12 +22,12 @@ namespace TcpChatClient
 
         protected override void OnConnected()
         {
-            Console.WriteLine($"Chat TCP client connected a new session with Id {Id}");
+            Debug.Log($"Chat TCP client connected a new session with Id {Id}");
         }
 
         protected override void OnDisconnected()
         {
-            Console.WriteLine($"Chat TCP client disconnected a session with Id {Id}");
+            Debug.Log($"Chat TCP client disconnected a session with Id {Id}");
 
             // Wait for a while...
             Thread.Sleep(1000);
@@ -37,12 +39,13 @@ namespace TcpChatClient
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            Console.WriteLine(Encoding.UTF8.GetString(buffer, (int)offset, (int)size));
+            Debug.Log("Client Received Sth. ...");
+            Debug.Log(Encoding.UTF8.GetString(buffer, (int)offset, (int)size));
         }
 
         protected override void OnError(SocketError error)
         {
-            Console.WriteLine($"Chat TCP client caught an error with code {error}");
+            Debug.Log($"Chat TCP client caught an error with code {error}");
         }
 
         private bool _stop;
@@ -50,7 +53,7 @@ namespace TcpChatClient
 
     public class Program
     {
-        public static void Run()
+        public static void Connect()
         {
             // TCP server address
             string address = "127.0.0.1";
@@ -58,19 +61,18 @@ namespace TcpChatClient
             // TCP server port
             int port = 1111;
 
-            Console.WriteLine($"TCP server address: {address}");
-            Console.WriteLine($"TCP server port: {port}");
-            Console.WriteLine();
+            Debug.Log($"TCP server address: {address}");
+            Debug.Log($"TCP server port: {port}");
 
             // Create a new TCP chat client
             var client = new ChatClient(address, port);
 
             // Connect the client
-            Console.Write("Client connecting...");
+            Debug.Log("Client connecting...");
             client.ConnectAsync();
-            Console.WriteLine("Done!");
+            Debug.Log("Done!");
 
-            Console.WriteLine("Press Enter to stop the client or '!' to reconnect the client...");
+            Debug.Log("Press Enter to stop the client or '!' to reconnect the client...");
 
             /*
             // Perform text input
@@ -83,9 +85,9 @@ namespace TcpChatClient
                 // Disconnect the client
                 if (line == "!")
                 {
-                    Console.Write("Client disconnecting...");
+                    Debug.Log("Client disconnecting...");
                     client.DisconnectAsync();
-                    Console.WriteLine("Done!");
+                    Debug.Log("Done!");
                     continue;
                 }
 
@@ -94,9 +96,9 @@ namespace TcpChatClient
             }
 
             // Disconnect the client
-            Console.Write("Client disconnecting...");
+            Debug.Log("Client disconnecting...");
             client.DisconnectAndStop();
-            Console.WriteLine("Done!");
+            Debug.Log("Done!");
             */
         }
     }

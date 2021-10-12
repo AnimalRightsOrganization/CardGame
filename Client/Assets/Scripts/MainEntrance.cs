@@ -15,6 +15,7 @@ public class MainEntrance : MonoBehaviour
         //release版关闭，debug版打开
         //Debug.unityLogger.logEnabled = false;
 
-        UIManager.GetInstance().Push<UI_MainMenu>();
+        //UIManager.GetInstance().Push<UI_MainMenu>();
+        UIManager.GetInstance().Push<UI_Login>();
     }
 }
