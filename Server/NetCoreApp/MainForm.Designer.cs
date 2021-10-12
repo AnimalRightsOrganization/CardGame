@@ -64,8 +64,8 @@ namespace WinFormsApp1
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.titleLabel = new System.Windows.Forms.Label();
+            this.queryBtn = new System.Windows.Forms.Button();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,28 +73,21 @@ namespace WinFormsApp1
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button2 = new System.Windows.Forms.Button();
+            this.startServerBtn = new System.Windows.Forms.Button();
+            this.deleteBtn = new System.Windows.Forms.Button();
+            this.updateBtn = new System.Windows.Forms.Button();
+            this.insertBtn = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // titleLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(142, 184);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 17);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "MongoDB";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(142, 267);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "连接";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.titleLabel.AutoSize = true;
+            this.titleLabel.Location = new System.Drawing.Point(142, 184);
+            this.titleLabel.Name = "titleLabel";
+            this.titleLabel.Size = new System.Drawing.Size(68, 17);
+            this.titleLabel.TabIndex = 0;
+            this.titleLabel.Text = "MongoDB";
             // 
             // notifyIcon1
             // 
@@ -148,24 +141,67 @@ namespace WinFormsApp1
             this.connectToolStripMenuItem.Text = "连接DB";
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.ConnectToolStripMenuItem_Click);
             // 
-            // button2
+            // insertBtn
             // 
-            this.button2.Location = new System.Drawing.Point(132, 357);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(94, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Start Server";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.insertBtn.Location = new System.Drawing.Point(142, 225);
+            this.insertBtn.Name = "insertBtn";
+            this.insertBtn.Size = new System.Drawing.Size(75, 23);
+            this.insertBtn.TabIndex = 1;
+            this.insertBtn.Text = "插入";
+            this.insertBtn.UseVisualStyleBackColor = true;
+            this.insertBtn.Click += new System.EventHandler(this.Button1_Click);
+            // 
+            // deleteBtn
+            // 
+            this.deleteBtn.Location = new System.Drawing.Point(142, 254);
+            this.deleteBtn.Name = "deleteBtn";
+            this.deleteBtn.Size = new System.Drawing.Size(75, 23);
+            this.deleteBtn.TabIndex = 2;
+            this.deleteBtn.Text = "删除";
+            this.deleteBtn.UseVisualStyleBackColor = true;
+            this.deleteBtn.Click += new System.EventHandler(this.Button2_Click);
+            // 
+            // updateBtn
+            // 
+            this.updateBtn.Location = new System.Drawing.Point(142, 283);
+            this.updateBtn.Name = "updateBtn";
+            this.updateBtn.Size = new System.Drawing.Size(75, 23);
+            this.updateBtn.TabIndex = 3;
+            this.updateBtn.Text = "修改";
+            this.updateBtn.UseVisualStyleBackColor = true;
+            this.updateBtn.Click += new System.EventHandler(this.Button3_Click);
+            // 
+            // queryBtn
+            // 
+            this.queryBtn.Location = new System.Drawing.Point(142, 312);
+            this.queryBtn.Name = "queryBtn";
+            this.queryBtn.Size = new System.Drawing.Size(75, 23);
+            this.queryBtn.TabIndex = 4;
+            this.queryBtn.Text = "查询";
+            this.queryBtn.UseVisualStyleBackColor = true;
+            this.queryBtn.Click += new System.EventHandler(this.Button4_Click);
+            // 
+            // startServerBtn
+            // 
+            this.startServerBtn.Location = new System.Drawing.Point(132, 357);
+            this.startServerBtn.Name = "startServerBtn";
+            this.startServerBtn.Size = new System.Drawing.Size(94, 23);
+            this.startServerBtn.TabIndex = 5;
+            this.startServerBtn.Text = "Start Server";
+            this.startServerBtn.UseVisualStyleBackColor = true;
+            this.startServerBtn.Click += new System.EventHandler(this.StartServerBtn_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(367, 665);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.insertBtn);
+            this.Controls.Add(this.updateBtn);
+            this.Controls.Add(this.deleteBtn);
+            this.Controls.Add(this.startServerBtn);
+            this.Controls.Add(this.queryBtn);
+            this.Controls.Add(this.titleLabel);
             this.Name = "MainForm";
             this.Text = "Winform+NetCore3.1+MongoDB";
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
@@ -181,14 +217,22 @@ namespace WinFormsApp1
 
         private void Button1_Click(object sender, System.EventArgs e)
         {
-            TestQuery();
+            InsertUser();
         }
 
-        private void button2_Click(object sender, System.EventArgs e)
+        private void Button2_Click(object sender, System.EventArgs e)
         {
-            Debug.Print($"启动服务器");
+            DeleteUser();
+        }
 
-            TcpChatServer.TCPChatServer.Run();
+        private void Button3_Click(object sender, System.EventArgs e)
+        {
+            UpdateUser();
+        }
+
+        private void Button4_Click(object sender, System.EventArgs e)
+        {
+            QueryUser();
         }
 
         private void InsertUser()
@@ -196,16 +240,20 @@ namespace WinFormsApp1
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase("stickerDB"); //数据库
             var collection = database.GetCollection<BsonDocument>("Users"); //表
-            //var filter = Builders<User>.Filter.Gte("number", 10); //查询条件
-            //var result = collection.Find(filter).ToList();
-            //Debug.Print($"QueryUser---{result.Count}");
 
+            // 方法①：class转 BsonDocument
             User p = new User();
-            p.name = "xxx";
-            p.number = 100;
-
-            //Insert Data
+            p.name = "yyy";
+            p.number = 101;
             collection.InsertOne(p.ToBsonDocument());
+
+            // 方法②：手动创建 BsonDocument
+            //var filter = new BsonDocument
+            //{
+            //    { "name", "xxx" },
+            //    { "number", 100 },
+            //};
+            //collection.InsertOne(filter);
         }
 
         private void DeleteUser()
@@ -214,13 +262,12 @@ namespace WinFormsApp1
             var database = client.GetDatabase("stickerDB");
             var collection = database.GetCollection<BsonDocument>("Users");
 
-            // 查询集合中的文档
-            var filter0 = new BsonDocument();
-            var search = Task.Run(async () => await collection.Find(filter0).ToListAsync()).Result;
-            Debug.Print($"search={search.Count}");
-
-            var deleteFilter = Builders<BsonDocument>.Filter.Eq("number", 100);
-            var result = collection.DeleteOne(deleteFilter);
+            var deleteFilter = Builders<BsonDocument>.Filter.Eq("number", 101);
+            //var filter = new BsonDocument
+            //{
+            //    { "number", 101 },
+            //};
+            var result = collection.DeleteMany(deleteFilter);
             Debug.Print($"result={result.DeletedCount}");
         }
 
@@ -230,17 +277,11 @@ namespace WinFormsApp1
             var database = client.GetDatabase("stickerDB"); //数据库
             var collection = database.GetCollection<BsonDocument>("Users"); //表
 
-            //var query = new BsonDocument
-            //{
-            //    { "name", "Henry" }, 
-            //    { "number", 14 },
-            //};
-
             //Update Data
-            var filter = Builders<BsonDocument>.Filter.Eq("number", 14);
-            var update = Builders<BsonDocument>.Update.Set("number", 13);
+            var filter = Builders<BsonDocument>.Filter.Eq("name", "Henry") & Builders<BsonDocument>.Filter.Eq("number", 14);
+            var update = Builders<BsonDocument>.Update.Set("number", 7);
             var result = collection.UpdateOne(filter, update);
-            //Debug.Print($"Update result={result.ModifiedCount}");
+            Debug.Print($"Update result={result.ModifiedCount}");
         }
 
         private void QueryUser()
@@ -273,7 +314,7 @@ namespace WinFormsApp1
             // 循环遍历输出
             search2.ForEach(p =>
             {
-                //Debug.Print($"姓名：{p["name"]}，球衣号码：{p["number"]}");
+                Debug.Print($"姓名：{p["name"]}，球衣号码：{p["number"]}");
             });
 
             //$lt    <   (less  than)
@@ -312,10 +353,16 @@ namespace WinFormsApp1
             //Debug.Print($"result={result.Count}");
         }
 
+        private void StartServerBtn_Click(object sender, System.EventArgs e)
+        {
+            Debug.Print($"启动服务器");
+
+            TcpChatServer.TCPChatServer.Run();
+        }
+
         #endregion
 
-        private Label label1;
-        private Button button1;
+        private Label titleLabel;
         private NotifyIcon notifyIcon1;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem showToolStripMenuItem;
@@ -323,6 +370,10 @@ namespace WinFormsApp1
         private ToolStripMenuItem maxToolStripMenuItem;
         private ToolStripMenuItem windowToolStripMenuItem;
         private ToolStripMenuItem connectToolStripMenuItem;
-        private Button button2;
+        private Button insertBtn;
+        private Button deleteBtn;
+        private Button updateBtn;
+        private Button queryBtn;
+        private Button startServerBtn;
     }
 }
