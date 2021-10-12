@@ -27,14 +27,12 @@ namespace TcpChatClient
         protected override void OnConnected()
         {
             Debug.Log($"Chat TCP client connected a new session with Id {Id}");
-            //m_OnConnected_Callback?.Invoke();
             EventManager.Trigger(1);
         }
 
         protected override void OnDisconnected()
         {
             Debug.Log($"Chat TCP client disconnected a session with Id {Id}");
-            //m_OnDisconnected_Callback?.Invoke();
             EventManager.Trigger(0);
 
             // Wait for a while...

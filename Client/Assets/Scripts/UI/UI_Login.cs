@@ -13,6 +13,7 @@ public class UI_Login : UIBase
     [SerializeField] Button m_LoginBtn;
     [SerializeField] GameObject m_InfoPanel;
     ChatClient client;
+    private Queue<int> _actions = new Queue<int>();
 
     void Awake()
     {
@@ -35,27 +36,28 @@ public class UI_Login : UIBase
         client.DisconnectAndStop();
     }
 
-    private Queue<int> _actions = new Queue<int>();
-
     void Update()
     {
-        if (_actions.Count > 0)
+        lock (_actions)
         {
-            var id = _actions.Dequeue();
-            //Debug.Log($"Update: {id}");
-
-            switch (id)
+            if (_actions.Count > 0)
             {
-                case 0:
-                    Debug.Log("<color=red>Disconnected</color>");
-                    m_Title.text = "Connecting";
-                    m_InfoPanel.SetActive(true);
-                    break;
-                case 1:
-                    Debug.Log("<color=green>Connected</color>");
-                    m_Title.text = "跑得快";
-                    m_InfoPanel.SetActive(false);
-                    break;
+                var id = _actions.Dequeue();
+                //Debug.Log($"Update: {id}");
+
+                switch (id)
+                {
+                    case 0:
+                        Debug.Log("<color=red>Disconnected</color>");
+                        m_Title.text = "Connecting";
+                        m_InfoPanel.SetActive(true);
+                        break;
+                    case 1:
+                        Debug.Log("<color=green>Connected</color>");
+                        m_Title.text = "跑得快";
+                        m_InfoPanel.SetActive(false);
+                        break;
+                }
             }
         }
     }
@@ -66,7 +68,6 @@ public class UI_Login : UIBase
         {
             _actions.Enqueue(id);
         }
-        //Debug.Log($"OnNetCallback: {id}");
     }
 
     void DoConnect()
@@ -79,8 +80,6 @@ public class UI_Login : UIBase
 
         // Create a new TCP chat client
         client = new ChatClient(address, port);
-        //client.m_OnConnected_Callback = OnConnected;
-        //client.m_OnDisconnected_Callback = OnDisconnected;
         EventManager.RegisterEvent(OnNetCallback);
 
         // Connect the client
@@ -93,19 +92,5 @@ public class UI_Login : UIBase
         Login login = new Login { Username = m_UsernameInput.text, Password = m_PasswordInput.text };
         byte[] buffer = ProtobufferTool.Serialize(login);
         client.SendAsync(buffer);
-    }
-
-    [ContextMenu("OnConnected")]
-    void OnConnected()
-    {
-        Debug.Log("<color=green>Connected</color>");
-        m_InfoPanel.SetActive(false);
-    }
-
-    [ContextMenu("OnDisconnected")]
-    void OnDisconnected()
-    {
-        Debug.Log("<color=red>Disconnected</color>");
-        m_InfoPanel.SetActive(true);
     }
 }
