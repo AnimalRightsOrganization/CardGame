@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_MainMenu : UIBase
+public class UI_Lobby : UIBase
 {
     [SerializeField] Button m_closeButton;
     [SerializeField] Button m_createButton;

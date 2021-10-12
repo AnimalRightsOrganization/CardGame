@@ -45,7 +45,6 @@ public class UI_Login : UIBase
         // Connect the client
         Debug.Log($"Client connecting...{address}:{port}");
         client.ConnectAsync();
-        Debug.Log("Done!");
     }
 
     void DoLogin()
