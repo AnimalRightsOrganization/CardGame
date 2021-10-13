@@ -55,7 +55,7 @@ namespace TcpChatClient
                 case SCID.S2CRegister:
                     break;
                 case SCID.S2CLogin:
-                    var msg = ProtobufferTool.Deserialize<Google.Protobuf.Login>(body);
+                    var msg = ProtobufferTool.Deserialize<Login>(body);
                     Debug.Log($"[S2C] {msg.Username}, {msg.Password}");
                     break;
                 default: //处理成文本

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package google.protobuf;
+//package google.protobuf;
 
 message Login {
   string username = 1;

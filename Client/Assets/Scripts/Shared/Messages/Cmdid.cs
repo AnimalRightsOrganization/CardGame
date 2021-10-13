@@ -22,9 +22,10 @@ public static partial class CmdidReflection {
   static CmdidReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "CgtjbWRpZC5wcm90byo2CgRDU0lEEhAKDEMyU19SZWdpc3RlchAAEg0KCUMy",
-          "U19Mb2dpbhABEg0KCUMyU19NYXRjaBACKjYKBFNDSUQSEAoMUzJDX1JlZ2lz",
-          "dGVyEAASDQoJUzJDX0xvZ2luEAESDQoJUzJDX01hdGNoEAJiBnByb3RvMw=="));
+          "CgtjbWRpZC5wcm90bypJCgRDU0lEEhAKDEMyU19SZWdpc3RlchAAEg0KCUMy",
+          "U19Mb2dpbhABEg0KCUMyU19NYXRjaBACEhEKDUMyU19HYW1lU3RhcnQQAypL",
+          "CgRTQ0lEEhAKDFMyQ19SZWdpc3RlchAAEg0KCVMyQ19Mb2dpbhABEg8KC1My",
+          "Q19NYXRjaGVkEAISEQoNUzJDX0dhbWVTdGFydBADYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::CSID), typeof(global::SCID), }, null, null));
@@ -40,12 +41,14 @@ public enum CSID {
   [pbr::OriginalName("C2S_Register")] C2SRegister = 0,
   [pbr::OriginalName("C2S_Login")] C2SLogin = 1,
   [pbr::OriginalName("C2S_Match")] C2SMatch = 2,
+  [pbr::OriginalName("C2S_GameStart")] C2SGameStart = 3,
 }
 
 public enum SCID {
   [pbr::OriginalName("S2C_Register")] S2CRegister = 0,
   [pbr::OriginalName("S2C_Login")] S2CLogin = 1,
-  [pbr::OriginalName("S2C_Match")] S2CMatch = 2,
+  [pbr::OriginalName("S2C_Matched")] S2CMatched = 2,
+  [pbr::OriginalName("S2C_GameStart")] S2CGameStart = 3,
 }
 
 #endregion

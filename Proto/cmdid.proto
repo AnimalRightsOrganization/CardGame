@@ -4,10 +4,12 @@ enum CSID {
 	C2S_Register = 0; //proto3版本中，首成员必须为0，成员不应有相同的值
 	C2S_Login = 1;
 	C2S_Match = 2;
+	C2S_GameStart = 3;
 }
 
 enum SCID {
 	S2C_Register = 0;
 	S2C_Login = 1;
-	S2C_Match = 2;
+	S2C_Matched = 2;
+	S2C_GameStart = 3;
 }

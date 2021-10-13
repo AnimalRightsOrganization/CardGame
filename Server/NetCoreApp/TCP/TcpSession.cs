@@ -403,7 +403,7 @@ namespace NetCoreServer
                     case CSID.C2SRegister:
                         break;
                     case CSID.C2SLogin:
-                        var msg2 = ProtobufferTool.Deserialize<Google.Protobuf.Login>(body);
+                        var msg2 = ProtobufferTool.Deserialize<Login>(body);
                         message = $"C2SLogin account={msg2.Username}, pwd={msg2.Password}";
                         break;
                     default: //处理成文本
