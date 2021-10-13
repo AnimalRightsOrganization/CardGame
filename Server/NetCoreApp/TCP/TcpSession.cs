@@ -390,16 +390,27 @@ namespace NetCoreServer
             var buffer = new byte[size];
             var length = Receive(buffer);
 
-            // 使用字符串解析
-            //string message = Encoding.UTF8.GetString(buffer, 0, (int)length);
-            //Debug.Print(message);
-
             // 使用Protobuf解析
             string message = string.Empty;
             if (length > 0)
             {
-                Google.Protobuf.Login msg2 = ProtobufferTool.Deserialize<Google.Protobuf.Login>(buffer);
-                message = $"账号{msg2.Username}，密码{msg2.Password}";
+                CSID header = (CSID)buffer[0];
+                byte[] body = new byte[buffer.Length - 1];
+                Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
+
+                switch (header)
+                {
+                    case CSID.C2SRegister:
+                        break;
+                    case CSID.C2SLogin:
+                        var msg2 = ProtobufferTool.Deserialize<Google.Protobuf.Login>(body);
+                        message = $"C2SLogin account={msg2.Username}, pwd={msg2.Password}";
+                        break;
+                    default: //处理成文本
+                        // 使用字符串解析
+                        message = Encoding.UTF8.GetString(buffer, 0, (int)length);
+                        break;
+                }
                 Debug.Print(message);
             }
 

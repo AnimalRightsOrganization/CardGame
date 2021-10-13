@@ -28,6 +28,7 @@ public class UI_Login : UIBase
 
     void Start()
     {
+        m_InfoPanel.SetActive(true);
         DoConnect();
     }
 
@@ -89,8 +90,14 @@ public class UI_Login : UIBase
 
     void DoLogin()
     {
+        //TODO: maincmd,subcmd, 分别留一个字节
         Login login = new Login { Username = m_UsernameInput.text, Password = m_PasswordInput.text };
-        byte[] buffer = ProtobufferTool.Serialize(login);
+        //byte[] buffer0 = ProtobufferTool.Serialize(login);
+        byte[] buffer = ProtobufferTool.PackMessage(CSID.C2SLogin, login);
+        //Debug.Log($"buffer0={buffer0.Length}, buffer={buffer.Length}");
         client.SendAsync(buffer);
+
+        //var log = ProtobufferTool.UnpackMessage<Login>(buffer);
+        //Debug.Log($"反序列化：{log.Username}, {log.Password}");
     }
 }

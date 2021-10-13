@@ -45,8 +45,24 @@ namespace TcpChatClient
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            Debug.Log("Client Received Sth. ...");
-            Debug.Log(Encoding.UTF8.GetString(buffer, (int)offset, (int)size));
+            SCID header = (SCID)buffer[0];
+            byte[] body = new byte[buffer.Length - 1];
+            Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
+            Debug.Log($"[S2C] {header}");
+
+            switch (header)
+            {
+                case SCID.S2CRegister:
+                    break;
+                case SCID.S2CLogin:
+                    var msg = ProtobufferTool.Deserialize<Google.Protobuf.Login>(body);
+                    Debug.Log($"[S2C] {msg.Username}, {msg.Password}");
+                    break;
+                default: //处理成文本
+                    Debug.Log("Client Received Sth. ...");
+                    Debug.Log(Encoding.UTF8.GetString(buffer, (int)offset, (int)size));
+                    break;
+            }
         }
 
         protected override void OnError(SocketError error)
