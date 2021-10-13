@@ -28,12 +28,11 @@ public class DebugTools : Editor
     private static void EditServerCode()
     {
         string root = new DirectoryInfo(UnityEngine.Application.dataPath).Parent.Parent.FullName;
-        string serverRoot = $"{root}/Server";
-        Debug.Log(serverRoot);
+        string slnPath = $"{root}/Server/NetCoreApp.sln";
 
         Process m_Process = new Process();
-        m_Process.StartInfo.WorkingDirectory = serverRoot;
-        m_Process.StartInfo.FileName = "NetCoreApp.sln";
+        m_Process.StartInfo.FileName = @"D:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe";
+        m_Process.StartInfo.Arguments = slnPath;
         m_Process.Start();
     }
 
