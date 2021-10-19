@@ -24,6 +24,7 @@ namespace WinFormsApp1
             //Debug.Print("count---" + this.notifyIcon1.ContextMenuStrip.Items.Count);
             //Debug.Print("0---" + this.notifyIcon1.ContextMenuStrip.Items[0].Name);
             //Debug.Print("1---" + this.notifyIcon1.ContextMenuStrip.Items[1].Name);
+            this.FormClosing += new FormClosingEventHandler(this.Form1_FormClosing);
         }
 
         private void Form1_SizeChanged(object sender, EventArgs e)
@@ -82,6 +83,26 @@ namespace WinFormsApp1
                 */
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Debug.Print("是否关闭？？");
+
+            DialogResult dr = MessageBox.Show("确定关s闭？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            switch (dr)
+            {
+                case DialogResult.OK:
+                    Debug.Print("关闭！");
+                    break;
+                case DialogResult.Cancel:
+                    Debug.Print("不关闭");
+                    e.Cancel = true;
+                    break;
+                default:
+                    Debug.Print("其他");
+                    break;
             }
         }
 
