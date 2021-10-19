@@ -9,21 +9,22 @@ public class LogicManagerEditor : Editor
 
         LogicManager demo = (LogicManager)target;
 
-        if (GUILayout.Button("开局", GUILayout.Height(25)))
+        if (GUILayout.Button("落座", GUILayout.Height(25)))
         {
-            demo.StartGame();
+            demo.CreateRoom();
         }
-        else if (GUILayout.Button("洗牌", GUILayout.Height(25)))
+        if (GUILayout.Button("洗牌", GUILayout.Height(25)))
         {
             demo.Shuffle();
         }
-        else if (GUILayout.Button("发牌", GUILayout.Height(25)))
+        if (GUILayout.Button("发牌", GUILayout.Height(25)))
         {
+            demo.Roll();
             demo.Deal();
         }
-        else if (GUILayout.Button("出牌", GUILayout.Height(25)))
+        if (GUILayout.Button("手牌排序", GUILayout.Height(25)))
         {
-            demo.Play();
+            demo.Sort();
         }
     }
 }

@@ -1,19 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class LogicManager : MonoBehaviour
 {
     public static LogicManager Instance;
 
-    public const int CARD_COUNT = 48; //一副牌54张，去除大小王，三张2，一张A。每人16张。
-    public int nextTurn = 0; //流程控制，当前出牌玩家id
+    public const int CARD_COUNT = 52; //一副牌54张，去除大小王，三张2，一张A。每人16张。
+    //public int nextTurn = 0; //流程控制，当前出牌玩家id
 
     BotDatabase botDatabase;
     [SerializeField, Range(2, 4)] int playerCount = 3; //本局玩家数，开房间时确定
+    [SerializeField] List<GamePlayer> playerList = new List<GamePlayer>(); //玩家
     [SerializeField] List<CardAttribute> libraryList = new List<CardAttribute>(); //牌库
-    [SerializeField] List<CardAttribute> deskList = new List<CardAttribute>(); //桌上的牌
-    [SerializeField] List<GamePlayer> playerList = new List<GamePlayer>(); //手牌
+    private int rollIndex;
 
     void Awake()
     {
@@ -39,7 +40,9 @@ public class LogicManager : MonoBehaviour
         }
         for (int i = 0; i < playerCount; i++)
         {
-            int seed = Random.Range(0, startArray.Length - i); //从剩下的随机数里生成
+            Random rd = new Random();
+            //int seed = Random.Range(0, startArray.Length - i);
+            int seed = rd.Next(startArray.Length - i); //从剩下的随机数里生成
             resultArray[i] = startArray[seed];//赋值给结果数组
             startArray[seed] = startArray[startArray.Length - i - 1]; //把随机数产生过的位置替换为未被选中的值。
         }
@@ -56,19 +59,9 @@ public class LogicManager : MonoBehaviour
                 money = botDatabase.botList[resultArray[i]].money
             };
 
-            //PlayerProvider scirpt = AvatarPool.instance.Spawn(player);
-            //scirpt.mPlayer = player; //赋值
-            //SpawnPoints.instance.SitDown(scirpt.transform); //入座
-
             playerList.Add(player);
+            Debug.Log($"Add Player: {i}");
         }
-    }
-
-    // 开局
-    public void StartGame()
-    {
-        //TODO: roll一张明牌
-        //TODO: 得到明牌的先出
     }
 
     // 洗牌
@@ -76,118 +69,96 @@ public class LogicManager : MonoBehaviour
     {
         // 重置
         libraryList.Clear();
-        deskList.Clear();
         for (int i = 0; i < playerList.Count; i++)
         {
-            playerList[i].handCardsList.Clear();
+            playerList[i].HandCards.Clear();
         }
 
-        //哈希不重复的随机数
-        System.Random id = new System.Random();
+        // 哈希不重复的随机数
+        Random rd = new Random();
         Hashtable hashtable = new Hashtable();
         for (int i = 0; hashtable.Count < CARD_COUNT; i++) //取值范围1-52
         {
-            int nValue = id.Next(CARD_COUNT + 1);
+            int nValue = rd.Next(CARD_COUNT + 1);
             if (!hashtable.ContainsValue(nValue) && nValue != 0)
             {
                 hashtable.Add(nValue, nValue);
-                CardAttribute card = new CardAttribute()
+                var card = new CardAttribute
                 {
-                    cardid = nValue, //1-10 / 11->10 / 12->10 / 13->10
+                    cardid = nValue,
                 };
                 card.SerializeCard();
                 libraryList.Add(card);
             }
         }
+
+        // 去掉三张2，一张A。
+        Debug.Log($"去掉前，牌库：{libraryList.Count}"); //52
+        int TwoCount = 3;
+        int OneCount = 1;
+        for (int i = 0; i < libraryList.Count; i++)
+        {
+            var card = libraryList[i];
+            if (card.weight == Weight.Two && TwoCount > 0)
+            {
+                TwoCount--;
+                libraryList.Remove(card);
+                Debug.Log($"<color=red>去掉：{card.ToString()}</color>");
+            }
+            if (card.weight == Weight.One && OneCount > 0)
+            {
+                OneCount--;
+                libraryList.Remove(card);
+                Debug.Log($"<color=red>去掉：{card.ToString()}</color>");
+            }
+        }
+        Debug.Log($"去掉后，牌库：{libraryList.Count}"); //48，cardid是不连续的
     }
 
-    // 发牌，nextTurn升序一人一张轮着发
+    // 抽牌
+    public void Roll()
+    {
+        // 48张中，roll一张明牌
+        Random rd = new Random();
+        rollIndex = rd.Next(libraryList.Count); //左闭右开[,)
+
+        var rollCard = libraryList[rollIndex];
+        Debug.Log($"<color=yellow>Roll出来的明牌：第{rollIndex}张，{rollCard.ToString()}</color>");
+    }
+
+    // 发牌
     public void Deal()
     {
-        // 发五轮
-        for (int k = 0; k < 5; k++)
+        int seatIndex = 0;
+        for (int i = libraryList.Count - 1; i >= 0; i--)
         {
-            // 共多少玩家
-            for (int j = 0; j < playerCount; j++)
+            var card = libraryList[i];
+            if (i == rollIndex)
             {
-                // 从牌库抽一张牌
-                int index = Random.Range(1, libraryList.Count);
-                Debug.Log("抽第" + index + "张，当前剩余" + libraryList.Count);
-
-                CardAttribute card = libraryList[index];
-                Debug.Log("[Player" + nextTurn + "]抽到 " + card.cardid);
-
-                // 把牌放入玩家手中
-                playerList[nextTurn].handCardsList.Add(card);
-
-                // 把牌从牌库中移除
-                libraryList.Remove(card);
-
-                // 下一轮
-                Debug.Log("----- 下一轮 -----");
-                nextTurn++;
-                if (nextTurn > playerCount - 1)
-                {
-                    nextTurn = 0;
-                }
+                // 得到明牌的玩家先出
+                Debug.Log($"<color=yellow>玩家{seatIndex}拥有明牌{card.ToString()}，先出</color>");
             }
-        }
 
-        ///TODO: 如果牌库不足10张，执行洗牌
-    }
+            // 把牌放入玩家手中
+            playerList[seatIndex].HandCards.Add(card);
 
-    // 出牌
-    public void Play()
-    {
-        for (int i = 0; i < playerCount; i++)
-        {
-            int value = CardValue(i);
-            Debug.Log("Player" + i + "：" + value);
+            // 把牌从牌库中移除
+            libraryList.Remove(card);
+
+            seatIndex++;
+            if (seatIndex > playerCount - 1)
+            {
+                seatIndex = 0;
+            }
+
+            Debug.Log($"[{i}轮]，发给玩家{seatIndex}，{card.ToString()}");
         }
     }
 
-    // 算分
-    int CardValue(int _gameid)
+    // 手牌排序
+    public void Sort()
     {
-        // 手牌分两组，一组三张，一组两张
-        // 三张这组加起来要是10/20/30
-        for (int i = 0; i < playerList[_gameid].handCardsList.Count - 2; i++)
-        {
-            // C53=>10种可能性，找出是否有三张加起来为10/20/30
-            for (int j = i + 1; j < playerList[_gameid].handCardsList.Count - 1; j++)
-            {
-                for (int k = j + 1; k < playerList[_gameid].handCardsList.Count; k++)
-                {
-                    int add = playerList[_gameid].handCardsList[i].value
-                             + playerList[_gameid].handCardsList[j].value
-                             + playerList[_gameid].handCardsList[k].value;
 
-                    if(add % 10 == 0)
-                    {
-                        // 有牛，计算点数
-                        int result = 0;
-                        for (int x = 0; x < playerList[_gameid].handCardsList.Count; x++)
-                        {
-                            result += playerList[_gameid].handCardsList[x].value;
-                        }
-                        return result % 10;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
-        }
-
-        // 清空手牌，放桌面库
-        for (int i = 0; i < playerList[_gameid].handCardsList.Count; i++)
-        {
-            deskList.Add(playerList[_gameid].handCardsList[i]);
-        }
-        //playerList[_gameid].handCardsList.Clear();
-
-        return -1;
     }
 }
 
@@ -196,61 +167,32 @@ public class LogicManager : MonoBehaviour
 public class CardAttribute
 {
     public int cardid; //0~52序号（大小王去掉）
-    public int value; //JQK对应的值
+    //public int value; //JQK对应的值11，12，13
 	public Colors colors; //花色
     public Weight weight; //牌面点数
 
     // 根据id，序列化牌面属性
     public void SerializeCard()
     {
-        int value = 0;
         if (this.cardid <= 13)
         {
             this.colors = Colors.Spade;
-            this.weight = (Weight)(this.cardid % 13); //0-12 切分//1-10/0,11,12
-
-            value = this.cardid % 13;
-            this.value = value;
-            if (value == 0 || value == 11 || value == 12)
-            {
-                this.value = 10;
-            }
+            this.weight = (Weight)(this.cardid % 14); //1-13
         }
         else if (this.cardid > 13 && this.cardid <= 26)
         {
             this.colors = Colors.Heart;
-            this.weight = (Weight)(this.cardid % 13);
-
-            value = this.cardid % 13;
-            this.value = value;
-            if (value == 0 || value == 11 || value == 12)
-            {
-                this.value = 10;
-            }
+            this.weight = (Weight)(this.cardid % 14);
         }
         else if (this.cardid > 26 && this.cardid <= 39)
         {
             this.colors = Colors.Club;
-            this.weight = (Weight)(this.cardid % 13);
-
-            value = this.cardid % 13;
-            this.value = value;
-            if (value == 0 || value == 11 || value == 12)
-            {
-                this.value = 10;
-            }
+            this.weight = (Weight)(this.cardid % 14);
         }
         else if (this.cardid > 39 && this.cardid <= 52)
         {
             this.colors = Colors.Square;
-            this.weight = (Weight)(this.cardid % 13);
-
-            value = this.cardid % 13;
-            this.value = value;
-            if (value == 0 || value == 11 || value == 12)
-            {
-                this.value = 10;
-            }
+            this.weight = (Weight)(this.cardid % 14);
         }
         /*
         else if (this.cardid == 53) //53,54
@@ -264,8 +206,11 @@ public class CardAttribute
             this.colors = Colors.King;
             this.weight = Weight.BJoker;
             this.value = 10;
-        }
-        */
+        }*/
+    }
+    public override string ToString()
+    {
+        return $"{colors}_{weight}:{cardid}";
     }
 }
 
@@ -274,6 +219,5 @@ public class CardAttribute
 public class GamePlayer : DBPlayer
 {
     public int SeatID; //这盘中的顺位
-    //public Identity identity; //身份庄/闲
-    public List<CardAttribute> handCardsList = new List<CardAttribute>(); //手牌List
+    public List<CardAttribute> HandCards = new List<CardAttribute>(); //手牌List
 }

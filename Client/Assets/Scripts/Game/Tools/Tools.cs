@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Xml.Serialization;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 //静态类，UI图片动态加载的全局控制。
@@ -21,28 +21,6 @@ public static class Tools
                 uiParent = GameObject.Find("GameRoot").transform;
             }
             return uiParent;
-        }
-    }
-
-    /// <summary>
-    /// 创建UI面板
-    /// </summary>
-    /// <param name="panelType">面板类型</param>
-    /// <returns>创建面板的实例</returns>
-    public static GameObject CreateUIPanel(PanelType panelType) //创建UI面板，静态类里只能写静态方法
-    {
-        GameObject prefab = Resources.Load<GameObject>(panelType.ToString());
-        if (prefab == null)
-        {
-            Debug.LogWarning("这个" + panelType.ToString() + "面板不存在"); //写底层代码，加警告，便于debug
-            return null;
-        }
-        else
-        {
-            GameObject panel = Object.Instantiate<GameObject>(prefab);
-            panel.name = panel.ToString(); //(Clone)
-            panel.transform.SetParent(UIParent, false); //是否保存世界坐标，ui必须写false
-            return panel;
         }
     }
 
