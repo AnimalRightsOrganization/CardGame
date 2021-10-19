@@ -36,6 +36,21 @@ public class NetManager : MonoBehaviour
             if (_states.Count > 0)
             {
                 int code = _states.Dequeue();
+                switch (code)
+                {
+                    case 0:
+                        Debug.Log("<color=red>Disconnected</color>");
+                        var uimanager = UIManager.GetInstance();
+                        if (uimanager.GetActiveUI() != typeof(UI_Login))
+                        {
+                            uimanager.PopAll();
+                            uimanager.Push<UI_Login>();
+                        }
+                        break;
+                    case 1:
+                        Debug.Log("<color=green>Connected</color>");
+                        break;
+                }
                 NetStateManager.Trigger(code); //分发
             }
         }

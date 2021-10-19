@@ -71,11 +71,9 @@ public class UI_Login : UIBase
         switch (code)
         {
             case 0:
-                Debug.Log("<color=red>Disconnected</color>");
                 m_InfoPanel.SetActive(true);
                 break;
             case 1:
-                Debug.Log("<color=green>Connected</color>");
                 m_InfoPanel.SetActive(false);
                 break;
         }

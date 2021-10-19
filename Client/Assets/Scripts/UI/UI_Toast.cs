@@ -1,26 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-#if UNITY_EDITOR
-using UnityEditor;
-[CustomEditor(typeof(UI_Toast))]
-public class UI_ToastEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
 
-        UI_Toast myScript = (UI_Toast)target;
-
-        if (GUILayout.Button("测试", GUILayout.Height(25)))
-        {
-            myScript.Show("呵呵");
-        }
-    }
-}
-#endif
 public class UI_Toast : UIBase
 {
     [SerializeField] RectTransform m_Panel;
