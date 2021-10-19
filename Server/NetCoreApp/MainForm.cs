@@ -89,7 +89,7 @@ namespace WinFormsApp1
         {
             Debug.Print("是否关闭？？");
 
-            DialogResult dr = MessageBox.Show("确定关s闭？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            DialogResult dr = MessageBox.Show("确定关闭？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             switch (dr)
             {
                 case DialogResult.OK:
