@@ -5,43 +5,31 @@ using UnityEngine.UI;
 
 public class UI_Lobby : UIBase
 {
-    [SerializeField] Button m_closeButton;
-    [SerializeField] Button m_createButton;
-    [SerializeField] Button m_joinButton;
+    [SerializeField] Button m_StoryBtn;
+    [SerializeField] Button m_MatchBtn;
 
     void Awake()
     {
-        m_closeButton = transform.Find("Close Button").GetComponent<Button>();
-        m_createButton = transform.Find("Create Button").GetComponent<Button>();
-        m_joinButton = transform.Find("Join Button").GetComponent<Button>();
+        m_StoryBtn = transform.Find("StoryBtn").GetComponent<Button>();
+        m_StoryBtn.onClick.AddListener(OnStoryMode);
 
-        m_closeButton.onClick.AddListener(OnCloseButtonClick);
-        m_createButton.onClick.AddListener(OnCreateButtonClick);
-        m_joinButton.onClick.AddListener(OnJoinButtonClick);
+        m_MatchBtn = transform.Find("MatchBtn").GetComponent<Button>();
+        m_MatchBtn.onClick.AddListener(OnMatchMode);
     }
 
-    void OnDestroy()
+    void OnStoryMode()
     {
-        m_closeButton.onClick.RemoveListener(OnCloseButtonClick);
-        m_createButton.onClick.RemoveListener(OnCreateButtonClick);
-        m_joinButton.onClick.RemoveListener(OnJoinButtonClick);
-    }
+        Debug.Log("单机");
 
-    void OnCloseButtonClick()
-    {
-        this.Pop();
-    }
-
-    void OnCreateButtonClick()
-    {
-        // 创建4人房间
         LogicManager.instance.CreateRoom(4);
-
-        this.Pop();
     }
 
-    void OnJoinButtonClick()
+    void OnMatchMode()
     {
-        this.Pop();
+        Debug.Log("匹配");
+
+        EmptyPacket packet = new EmptyPacket();
+        byte[] data = ProtobufferTool.PackMessage(CSID.C2SMatch, packet);
+        NetManager.Instance.SendAsync(data);
     }
 }

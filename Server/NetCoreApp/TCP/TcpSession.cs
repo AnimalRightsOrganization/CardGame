@@ -392,6 +392,7 @@ namespace NetCoreServer
 
             // Ê¹ÓÃProtobuf½âÎö
             string message = string.Empty;
+            /*
             if (length > 0)
             {
                 CSID header = (CSID)buffer[0];
@@ -412,8 +413,7 @@ namespace NetCoreServer
                         break;
                 }
                 Debug.Print(message);
-            }
-
+            }*/
             return message;
         }
 

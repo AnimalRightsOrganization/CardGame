@@ -120,7 +120,7 @@ namespace TcpChatClient
 
             Debug.Log("Press Enter to stop the client or '!' to reconnect the client...");
 
-            /*
+            /* for (;;) 反编译底层比 while(true) 省资源。
             // Perform text input
             for (;;)
             {

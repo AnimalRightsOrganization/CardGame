@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
+using UnityEditor;
 [CustomEditor(typeof(LogicManager))]
 public class LogicManagerEditor : Editor
 {
@@ -30,7 +30,7 @@ public class LogicManagerEditor : Editor
         }
     }
 }
-
+#endif
 public class LogicManager : MonoBehaviour
 {
     public static LogicManager instance;

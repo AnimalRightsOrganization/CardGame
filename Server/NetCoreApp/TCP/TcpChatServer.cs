@@ -19,6 +19,8 @@ namespace TcpChatServer
             // Send invite message
             string message = "Hello from TCP chat! Please send a message or '!' to disconnect the client!";
             SendAsync(message);
+
+            TCPChatServer.playerManager.AddPlayer(Id, "guest");
         }
 
         protected override void OnDisconnected()
@@ -31,7 +33,7 @@ namespace TcpChatServer
             CSID header = (CSID)buffer[0];
             byte[] body = new byte[buffer.Length - 1];
             Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
-            //Debug.Print($"[C2S] {header}");
+            //Debug.Print($"Id---{Id}---Send Message");
 
             switch (header)
             {
@@ -47,12 +49,15 @@ namespace TcpChatServer
                         if (dbCode == 0)
                         {
                             // 注册成功，直接返回登录
-                            var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = "000000" };
+                            var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = Id.ToString() };
                             byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
                             SendAsync(loginData);
+
+                            TCPChatServer.playerManager.UpdatePlayer(Id, packet.Username);
                         }
                         else
                         {
+                            //TODO: 统一使用错误码
                             var registError = new RegisterError { Code = dbCode };
                             byte[] registData = ProtobufferTool.PackMessage(SCID.S2CRegister, registError);
                             SendAsync(registData);
@@ -62,15 +67,35 @@ namespace TcpChatServer
                 case CSID.C2SLogin:
                     {
                         var packet = ProtobufferTool.Deserialize<Login>(body);
-                        Debug.Print($"[{header}] {packet.Username}, {packet.Password}");
+                        Debug.Print($"[{header}] {packet.Username}, {packet.Password}---{Id}");
 
                         // 查询MongoDB，返回结果
                         uint dbCode = DBTools.QueryLogin(packet.Username, packet.Password);
                         Debug.Print($"db查询结果={dbCode}");
 
-                        var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = "000000" };
-                        byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
-                        SendAsync(loginData);
+                        if (dbCode == 0)
+                        {
+                            var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = Id.ToString() };
+                            byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
+                            SendAsync(loginData);
+
+                            TCPChatServer.playerManager.UpdatePlayer(Id, packet.Username);
+                        }
+                        else
+                        {
+                            //TODO: 统一使用错误码
+                        }
+                    }
+                    break;
+                case CSID.C2SMatch:
+                    {
+                        var packet = ProtobufferTool.Deserialize<EmptyPacket>(body);
+
+                        // 空消息判断来源
+                        string username = TCPChatServer.playerManager.GetUsernameByGuid(Id);
+                        Debug.Print($"匹配请求，来自：{username}");
+
+                        //TODO: 加入匹配队列
                     }
                     break;
                 default: //处理成文本
@@ -112,6 +137,8 @@ namespace TcpChatServer
     {
         protected static ChatServer server;
 
+        public static ServerPlayerManager playerManager;
+
         public static void Run()
         {
             // TCP server port
@@ -128,6 +155,7 @@ namespace TcpChatServer
             Debug.Print("Done!");
 
             //Debug.Print("Press Enter to stop the server or '!' to restart the server...");
+            playerManager = new ServerPlayerManager();
 
             /*
             // Perform text input
