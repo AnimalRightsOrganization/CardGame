@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using TcpClient = NetCoreServer.TcpClient;
 using Debug = UnityEngine.Debug;
@@ -9,11 +8,6 @@ namespace TcpChatClient
 {
     public class ChatClient : TcpClient
     {
-        // 线程中，不支持操作UI。
-        //public Action m_OnConnected_Callback;
-        //public Action m_OnDisconnected_Callback;
-        //public Action<SocketError> m_OnNetworkError_Callback;
-
         public ChatClient(string address, int port) : base(address, port) {}
 
         public void DisconnectAndStop()
@@ -27,13 +21,13 @@ namespace TcpChatClient
         protected override void OnConnected()
         {
             Debug.Log($"Chat TCP client connected a new session with Id {Id}");
-            EventManager.Trigger(1);
+            NetManager.Instance.OnNetStateReceived(1);
         }
 
         protected override void OnDisconnected()
         {
             Debug.Log($"Chat TCP client disconnected a session with Id {Id}");
-            EventManager.Trigger(0);
+            NetManager.Instance.OnNetStateReceived(0);
 
             // Wait for a while...
             Thread.Sleep(1000);
@@ -45,12 +39,18 @@ namespace TcpChatClient
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            SCID header = (SCID)buffer[0];
+            byte header = buffer[0];
             byte[] body = new byte[buffer.Length - 1];
             Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
             //Debug.Log($"[S2C] {header}");
 
-            switch (header)
+            // 这里是线程内，不解包。
+            // 分发给网络管理器（NetManager），在Update中取出。
+            // 再分发到UI里面去处理。
+            NetManager.Instance.OnNetPacketReceived(header, body);
+
+            /*
+            switch ((SCID)header)
             {
                 case SCID.S2CRegister:
                     {
@@ -85,6 +85,7 @@ namespace TcpChatClient
                     Debug.Log($"Client Received: {message}");
                     break;
             }
+            */
         }
 
         protected override void OnError(SocketError error)

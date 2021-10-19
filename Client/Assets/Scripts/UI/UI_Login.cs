@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Google.Protobuf;
 using TcpChatClient;
 
 public class UI_Login : UIBase
@@ -23,8 +22,6 @@ public class UI_Login : UIBase
     [SerializeField] Button m_ToLoginBtn;
     [Header("连接")]
     [SerializeField] GameObject m_InfoPanel;
-    ChatClient client;
-    private Queue<int> _actions = new Queue<int>();
 
     void Awake()
     {
@@ -50,66 +47,84 @@ public class UI_Login : UIBase
         m_InfoPanel = transform.Find("InfoPanel").gameObject;
     }
 
+    void OnEnable()
+    {
+        NetStateManager.RegisterEvent(OnNetState);
+        NetPacketManager.RegisterEvent(OnNetPacket);
+    }
+
+    void OnDisable()
+    {
+        NetStateManager.UnRegisterEvent(OnNetState);
+        NetPacketManager.UnRegisterEvent(OnNetPacket);
+    }
+
     void Start()
     {
         m_InfoPanel.SetActive(true);
-        DoConnect();
+
+        NetManager.Instance.Connect();
     }
 
-    void OnDestroy()
+    void OnNetState(int code)
     {
-        client.DisconnectAndStop();
-    }
-
-    void Update()
-    {
-        lock (_actions)
+        switch (code)
         {
-            if (_actions.Count > 0)
-            {
-                var id = _actions.Dequeue();
-                //Debug.Log($"Update: {id}");
-
-                switch (id)
+            case 0:
+                Debug.Log("<color=red>Disconnected</color>");
+                m_InfoPanel.SetActive(true);
+                break;
+            case 1:
+                Debug.Log("<color=green>Connected</color>");
+                m_InfoPanel.SetActive(false);
+                break;
+        }
+    }
+    void OnNetPacket(NetPacket pt)
+    {
+        SCID header = (SCID)pt.header;
+        byte[] body = pt.body;
+        switch (header)
+        {
+            case SCID.S2CRegister:
                 {
-                    case 0:
-                        Debug.Log("<color=red>Disconnected</color>");
-                        m_Title.text = "Connecting";
-                        m_InfoPanel.SetActive(true);
-                        break;
-                    case 1:
-                        Debug.Log("<color=green>Connected</color>");
-                        m_Title.text = "跑得快";
-                        m_InfoPanel.SetActive(false);
-                        break;
+                    var packet = ProtobufferTool.Deserialize<RegisterError>(body);
+                    Debug.Log($"[{header}] Code={packet.Code}");
+                    if (packet.Code == 100)
+                    {
+                        Debug.LogError("注册失败，用户名已存在");
+                        var ui = UIManager.GetInstance().Push<UI_Toast>();
+                        ui.Show("注册失败，用户名已存在");
+                    }
                 }
-            }
+                break;
+            case SCID.S2CLogin:
+                {
+                    var packet = ProtobufferTool.Deserialize<LoginResult>(body);
+                    Debug.Log($"[{header}] Code={packet.Code}");
+                    if (packet.Code == 0)
+                    {
+                        Debug.Log($"<color=green>登录成功, Username={packet.Username}, Token={packet.Token}</color>");
+                        UIManager.GetInstance().Push<UI_Lobby>();
+                        this.Pop();
+                    }
+                    else if (packet.Code == 100)
+                    {
+                        Debug.LogError("登录失败，用户名或密码错误");
+                        var ui = UIManager.GetInstance().Push<UI_Toast>();
+                        ui.Show("登录失败，用户名或密码错误");
+                    }
+                    else
+                    {
+                        Debug.LogError($"登录失败，其他原因：{packet.Code}");
+                    }
+                }
+                break;
+            //default: //处理成文本
+            //    string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
+            //    Debug.Log($"Client Received: {message}");
+            //    break;
         }
-    }
-
-    void OnNetCallback(int id)
-    {
-        lock (_actions)
-        {
-            _actions.Enqueue(id);
-        }
-    }
-
-    void DoConnect()
-    {
-        // TCP server address
-        string address = "127.0.0.1";
-
-        // TCP server port
-        int port = 1111;
-
-        // Create a new TCP chat client
-        client = new ChatClient(address, port);
-        EventManager.RegisterEvent(OnNetCallback);
-
-        // Connect the client
-        Debug.Log($"Client connecting...{address}:{port}");
-        client.ConnectAsync();
     }
 
     void ToLogin()
@@ -129,16 +144,20 @@ public class UI_Login : UIBase
         if (string.IsNullOrEmpty(m_LoginUsrInput.text))
         {
             Debug.LogError("请输入用户名");
+            var ui = UIManager.GetInstance().Push<UI_Toast>();
+            ui.Show("请输入用户名");
             return;
         }
         if (string.IsNullOrEmpty(m_LoginPwdInput.text))
         {
-            Debug.LogError("请输入用户名");
+            Debug.LogError("请输入密码");
+            var ui = UIManager.GetInstance().Push<UI_Toast>();
+            ui.Show("请输入密码");
             return;
         }
         Login packet = new Login { Username = m_LoginUsrInput.text, Password = m_LoginPwdInput.text };
         byte[] data = ProtobufferTool.PackMessage(CSID.C2SLogin, packet);
-        client.SendAsync(data);
+        NetManager.Instance.SendAsync(data);
     }
 
     void DoRegister()
@@ -146,10 +165,12 @@ public class UI_Login : UIBase
         if (m_RegistPwdInput1.text.Equals(m_RegistPwdInput2.text) == false)
         {
             Debug.LogError("密码不一致");
+            var ui = UIManager.GetInstance().Push<UI_Toast>();
+            ui.Show("密码不一致");
             return;
         }
         Register packet = new Register { Username = m_RegistUsrInput.text, Password = m_RegistPwdInput1.text };
         byte[] data = ProtobufferTool.PackMessage(CSID.C2SRegister, packet);
-        client.SendAsync(data);
+        NetManager.Instance.SendAsync(data);
     }
 }
