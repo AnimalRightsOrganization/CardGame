@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
@@ -89,9 +87,29 @@ public enum CardType
 /// <summary>
 /// 身份
 /// </summary>
-public enum Identity
+//public enum Identity
+//{
+//    Farmer, //农民
+//    LandLord //地主
+//}
+
+// 数据库玩家信息
+[System.Serializable]
+public class DBPlayer
 {
-    Farmer, //农民
-    LandLord //地主
+    public string user_id; //用户名 nn_1234567890
+    public AvatarModel avatar;
+    public long money;
+    //public string nickname;
+    //public string gender;
+    //public string headimg;
 }
 
+public enum AvatarModel
+{
+    Reimu = 0,
+    Marisa = 1,
+    Alice = 2,
+    Ellen = 3,
+    Anaberal = 4,
+}

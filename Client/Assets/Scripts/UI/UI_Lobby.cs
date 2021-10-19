@@ -21,7 +21,7 @@ public class UI_Lobby : UIBase
     {
         Debug.Log("单机");
 
-        LogicManager.instance.CreateRoom(4);
+        //LogicManager.Instance.CreateRoom(3);
     }
 
     void OnMatchMode()

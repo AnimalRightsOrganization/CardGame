@@ -1,41 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-[CustomEditor(typeof(LogicManager))]
-public class LogicManagerEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector(); //显示默认所有参数
 
-        LogicManager demo = (LogicManager)target;
-        
-        if (GUILayout.Button("开局"))
-        {
-            demo.StartGame();
-        }
-        else if (GUILayout.Button("洗牌"))
-        {
-            demo.Shuffle();
-        }
-        else if (GUILayout.Button("发牌"))
-        {
-            demo.Deal();
-        }
-        else if (GUILayout.Button("出牌"))
-        {
-            demo.Play();
-        }
-    }
-}
-#endif
 public class LogicManager : MonoBehaviour
 {
-    public static LogicManager instance;
+    public static LogicManager Instance;
 
-    public const int cardCount = 52; //一副牌54张，去除大小王
+    public const int CARD_COUNT = 48; //一副牌54张，去除大小王，三张2，一张A。每人16张。
     public int nextTurn = 0; //流程控制，当前出牌玩家id
 
     BotDatabase botDatabase;
@@ -46,19 +17,17 @@ public class LogicManager : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
+        Instance = this;
         botDatabase = Resources.Load<BotDatabase>("BotDatabase");
     }
 
-    // 创建房间，加入count个玩家
-    public void CreateRoom(int count)
+    // 创建房间
+    public void CreateRoom()
     {
-        playerCount = count;
+        //TODO: 4位RoomID，由服务器分配
+        //int roomId = Random.Range(1000, 10000);
 
-        ///TODO: 4位RoomID，由服务器分配
-        int roomId = Random.Range(1000, 10000);
-
-        ///TODO: 等待其他玩家加入
+        //TODO: 等待其他玩家加入
         
         // 从总玩家数max中，随机取count个数
         int max = System.Enum.GetNames(typeof(AvatarModel)).GetLength(0);
@@ -81,7 +50,7 @@ public class LogicManager : MonoBehaviour
         {
             GamePlayer player = new GamePlayer()
             {
-                gameid = i,
+                SeatID = i,
                 user_id = botDatabase.botList[resultArray[i]].user_id,
                 avatar = (AvatarModel)resultArray[i],
                 money = botDatabase.botList[resultArray[i]].money
@@ -98,22 +67,8 @@ public class LogicManager : MonoBehaviour
     // 开局
     public void StartGame()
     {
-        // roll一个数来确定庄家 ///TODO: 抢庄家
-        int bankerid = UnityEngine.Random.Range(0, playerCount);
-        Debug.Log(bankerid + " is lord");
-
-        // 分配身份 //黑桃3先出
-        for (int i = 0; i < playerList.Count; i++)
-        {
-            if (playerList[i].gameid == bankerid)
-            {
-                playerList[i].identity = Identity.LandLord;
-            }
-            else
-            {
-                playerList[i].identity = Identity.Farmer;
-            }
-        }
+        //TODO: roll一张明牌
+        //TODO: 得到明牌的先出
     }
 
     // 洗牌
@@ -130,9 +85,9 @@ public class LogicManager : MonoBehaviour
         //哈希不重复的随机数
         System.Random id = new System.Random();
         Hashtable hashtable = new Hashtable();
-        for (int i = 0; hashtable.Count < cardCount; i++) //取值范围1-52
+        for (int i = 0; hashtable.Count < CARD_COUNT; i++) //取值范围1-52
         {
-            int nValue = id.Next(cardCount + 1);
+            int nValue = id.Next(CARD_COUNT + 1);
             if (!hashtable.ContainsValue(nValue) && nValue != 0)
             {
                 hashtable.Add(nValue, nValue);
@@ -316,9 +271,9 @@ public class CardAttribute
 
 // 牌局玩家属性
 [System.Serializable]
-public class GamePlayer : Player
+public class GamePlayer : DBPlayer
 {
-    public int gameid; //这盘中的顺位
-    public Identity identity; //身份庄/闲
+    public int SeatID; //这盘中的顺位
+    //public Identity identity; //身份庄/闲
     public List<CardAttribute> handCardsList = new List<CardAttribute>(); //手牌List
 }

@@ -6,20 +6,20 @@ using UnityEngine;
 public class BotDatabase : ScriptableObject
 {
     public string title = "Bots";
-    public List<Player> botList;
+    public List<DBPlayer> botList;
 
     void OnEnable()
     {
         if (botList == null)
-            botList = new List<Player>();
+            botList = new List<DBPlayer>();
     }
 
-    public void Add(Player bot)
+    public void Add(DBPlayer bot)
     {
         botList.Add(bot);
     }
 
-    public void Remove(Player bot)
+    public void Remove(DBPlayer bot)
     {
         botList.Remove(bot);
     }
