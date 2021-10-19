@@ -63,18 +63,28 @@ namespace NetCoreServer.Utils
         //    database.CreateCollection("users");
         //}
 
-        public static void AddUser(string _username, string _pwd)
+        public static uint AddUser(string _username, string _pwd)
         {
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase("cardGame"); //数据库
             var collection = database.GetCollection<User>("users"); //表
 
-            // 方法①：class转 BsonDocument
-            User p = new User(_username, _pwd);
-            p.createDate = DateTime.Now;
-            collection.InsertOne(p);
+            // ①查询是否存在
+            var filter = Builders<User>.Filter.Eq(x => x.username, _username);
+            var result = Task.Run(async () => await collection.Find(filter).ToListAsync()).Result;
 
-            //Debug.Print("insert ok");
+            // ②创建，返回结果
+            if (result.Count == 0)
+            {
+                User p = new User(_username, _pwd);
+                p.createDate = DateTime.Now;
+                collection.InsertOne(p);
+                return 0;
+            }
+            else
+            {
+                return 100; //已经存在，不允许创建
+            }
         }
 
         public static void DeleteUser(string _username)

@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+//package google.protobuf;
+
+message RegisterError {
+  uint32 code = 1;		//登录结果（0：成功，101：密码错误）
+}

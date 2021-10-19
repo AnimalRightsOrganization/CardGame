@@ -8,9 +8,20 @@ using TcpChatClient;
 public class UI_Login : UIBase
 {
     [SerializeField] Text m_Title;
-    [SerializeField] InputField m_UsernameInput;
-    [SerializeField] InputField m_PasswordInput;
+    [Header("登录")]
+    [SerializeField] GameObject m_LoginPanel;
+    [SerializeField] InputField m_LoginUsrInput;
+    [SerializeField] InputField m_LoginPwdInput;
     [SerializeField] Button m_LoginBtn;
+    [SerializeField] Button m_ToRegistBtn;
+    [Header("注册")]
+    [SerializeField] GameObject m_RegistPanel;
+    [SerializeField] InputField m_RegistUsrInput;
+    [SerializeField] InputField m_RegistPwdInput1;
+    [SerializeField] InputField m_RegistPwdInput2;
+    [SerializeField] Button m_RegisterBtn;
+    [SerializeField] Button m_ToLoginBtn;
+    [Header("连接")]
     [SerializeField] GameObject m_InfoPanel;
     ChatClient client;
     private Queue<int> _actions = new Queue<int>();
@@ -18,12 +29,25 @@ public class UI_Login : UIBase
     void Awake()
     {
         m_Title = transform.Find("Title/Text").GetComponent<Text>();
-        m_UsernameInput = transform.Find("Body/UsernameInput").GetComponent<InputField>();
-        m_PasswordInput = transform.Find("Body/PasswordInput").GetComponent<InputField>();
-        m_LoginBtn = transform.Find("Body/LoginBtn").GetComponent<Button>();
-        m_InfoPanel = transform.Find("InfoPanel").gameObject;
-
+        //
+        m_LoginPanel = transform.Find("LoginBody").gameObject;
+        m_LoginUsrInput = transform.Find("LoginBody/UsernameInput").GetComponent<InputField>();
+        m_LoginPwdInput = transform.Find("LoginBody/PasswordInput").GetComponent<InputField>();
+        m_LoginBtn = transform.Find("LoginBody/LoginBtn").GetComponent<Button>();
         m_LoginBtn.onClick.AddListener(DoLogin);
+        m_ToRegistBtn = transform.Find("LoginBody/ToRegisterBtn").GetComponent<Button>();
+        m_ToRegistBtn.onClick.AddListener(ToRegist);
+        //
+        m_RegistPanel = transform.Find("RegisterBody").gameObject;
+        m_RegistUsrInput = transform.Find("RegisterBody/UsernameInput").GetComponent<InputField>();
+        m_RegistPwdInput1 = transform.Find("RegisterBody/PasswordInput1").GetComponent<InputField>();
+        m_RegistPwdInput2 = transform.Find("RegisterBody/PasswordInput2").GetComponent<InputField>();
+        m_RegisterBtn = transform.Find("RegisterBody/RegisterBtn").GetComponent<Button>();
+        m_RegisterBtn.onClick.AddListener(DoRegister);
+        m_ToLoginBtn = transform.Find("RegisterBody/ToLoginBtn").GetComponent<Button>();
+        m_ToLoginBtn.onClick.AddListener(ToLogin);
+        //
+        m_InfoPanel = transform.Find("InfoPanel").gameObject;
     }
 
     void Start()
@@ -88,13 +112,44 @@ public class UI_Login : UIBase
         client.ConnectAsync();
     }
 
+    void ToLogin()
+    {
+        m_LoginPanel.SetActive(true);
+        m_RegistPanel.SetActive(false);
+    }
+
+    void ToRegist()
+    {
+        m_LoginPanel.SetActive(false);
+        m_RegistPanel.SetActive(true);
+    }
+
     void DoLogin()
     {
-        Login login = new Login { Username = m_UsernameInput.text, Password = m_PasswordInput.text };
-        byte[] buffer = ProtobufferTool.PackMessage(CSID.C2SLogin, login);
-        client.SendAsync(buffer);
+        if (string.IsNullOrEmpty(m_LoginUsrInput.text))
+        {
+            Debug.LogError("请输入用户名");
+            return;
+        }
+        if (string.IsNullOrEmpty(m_LoginPwdInput.text))
+        {
+            Debug.LogError("请输入用户名");
+            return;
+        }
+        Login packet = new Login { Username = m_LoginUsrInput.text, Password = m_LoginPwdInput.text };
+        byte[] data = ProtobufferTool.PackMessage(CSID.C2SLogin, packet);
+        client.SendAsync(data);
+    }
 
-        //var log = ProtobufferTool.UnpackMessage<Login>(buffer);
-        //Debug.Log($"反序列化：{log.Username}, {log.Password}");
+    void DoRegister()
+    {
+        if (m_RegistPwdInput1.text.Equals(m_RegistPwdInput2.text) == false)
+        {
+            Debug.LogError("密码不一致");
+            return;
+        }
+        Register packet = new Register { Username = m_RegistUsrInput.text, Password = m_RegistPwdInput1.text };
+        byte[] data = ProtobufferTool.PackMessage(CSID.C2SRegister, packet);
+        client.SendAsync(data);
     }
 }

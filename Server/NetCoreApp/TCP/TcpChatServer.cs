@@ -31,23 +31,47 @@ namespace TcpChatServer
             CSID header = (CSID)buffer[0];
             byte[] body = new byte[buffer.Length - 1];
             Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
-            Debug.Print($"[C2S] {header}");
+            //Debug.Print($"[C2S] {header}");
 
             switch (header)
             {
                 case CSID.C2SRegister:
+                    {
+                        var packet = ProtobufferTool.Deserialize<Register>(body);
+                        Debug.Print($"[{header}] {packet.Username}, {packet.Password}");
+
+                        // 查询MongoDB，返回结果
+                        uint dbCode = DBTools.AddUser(packet.Username, packet.Password);
+                        Debug.Print($"db查询结果={dbCode}");
+
+                        if (dbCode == 0)
+                        {
+                            // 注册成功，直接返回登录
+                            var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = "000000" };
+                            byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
+                            SendAsync(loginData);
+                        }
+                        else
+                        {
+                            var registError = new RegisterError { Code = dbCode };
+                            byte[] registData = ProtobufferTool.PackMessage(SCID.S2CRegister, registError);
+                            SendAsync(registData);
+                        }
+                    }
                     break;
                 case CSID.C2SLogin:
-                    var packet = ProtobufferTool.Deserialize<Login>(body);
-                    Debug.Print($"[C2SLogin] {packet.Username}, {packet.Password}");
+                    {
+                        var packet = ProtobufferTool.Deserialize<Login>(body);
+                        Debug.Print($"[{header}] {packet.Username}, {packet.Password}");
 
-                    // 查询MongoDB，返回结果
-                    uint dbCode = DBTools.QueryLogin(packet.Username, packet.Password);
-                    Debug.Print($"db查询结果={dbCode}");
+                        // 查询MongoDB，返回结果
+                        uint dbCode = DBTools.QueryLogin(packet.Username, packet.Password);
+                        Debug.Print($"db查询结果={dbCode}");
 
-                    var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = "000000" };
-                    byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
-                    SendAsync(loginData);
+                        var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = "000000" };
+                        byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
+                        SendAsync(loginData);
+                    }
                     break;
                 default: //处理成文本
                     string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);

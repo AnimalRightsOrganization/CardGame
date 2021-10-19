@@ -48,22 +48,36 @@ namespace TcpChatClient
             SCID header = (SCID)buffer[0];
             byte[] body = new byte[buffer.Length - 1];
             Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
-            Debug.Log($"[S2C] {header}");
+            //Debug.Log($"[S2C] {header}");
 
             switch (header)
             {
                 case SCID.S2CRegister:
+                    {
+                        var packet = ProtobufferTool.Deserialize<RegisterError>(body);
+                        Debug.Log($"[{header}] Code={packet.Code}");
+                        if (packet.Code == 100)
+                        {
+                            Debug.LogError("注册失败，用户名已存在");
+                        }
+                    }
                     break;
                 case SCID.S2CLogin:
-                    var packet = ProtobufferTool.Deserialize<LoginResult>(body);
-                    Debug.Log($"[S2C] Code={packet.Code}, Username={packet.Username}, Token={packet.Token}");
-                    if (packet.Code == 0)
                     {
-                        Debug.Log("<color=green>登录成功</color>");
-                    }
-                    else
-                    {
-                        Debug.LogError("登录失败");
+                        var packet = ProtobufferTool.Deserialize<LoginResult>(body);
+                        Debug.Log($"[{header}] Code={packet.Code}, Username={packet.Username}, Token={packet.Token}");
+                        if (packet.Code == 0)
+                        {
+                            Debug.Log("<color=green>登录成功</color>");
+                        }
+                        else if (packet.Code == 100)
+                        {
+                            Debug.LogError("登录失败，用户名或密码错误");
+                        }
+                        else
+                        {
+                            Debug.LogError($"登录失败，其他原因：{packet.Code}");
+                        }
                     }
                     break;
                 default: //处理成文本
