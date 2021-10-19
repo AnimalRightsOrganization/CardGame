@@ -48,14 +48,24 @@ public class ProtobufferTool
         packList.AddRange(body); //包体
         return packList.ToArray();
     }
-
-    public static T UnpackMessage<T>(byte[] data) where T : IMessage, new()
+    public static byte[] PackMessage(SCID messageID, IMessage msg)
     {
-        byte header = data[0];
-        byte[] body = new byte[data.Length - 1];
-        Array.Copy(data, 1, body, 0, data.Length - 1);
+        byte header = (byte)messageID; //消息id (1个字节)
+        byte[] body = ProtobufferTool.Serialize(msg);
 
-        T msg = Deserialize<T>(body);
-        return msg;
+        List<byte> packList = new List<byte>();
+        packList.Add(header); //包头
+        packList.AddRange(body); //包体
+        return packList.ToArray();
     }
+
+    //public static T UnpackMessage<T>(byte[] data) where T : IMessage, new()
+    //{
+    //    byte header = data[0];
+    //    byte[] body = new byte[data.Length - 1];
+    //    Array.Copy(data, 1, body, 0, data.Length - 1);
+
+    //    T msg = Deserialize<T>(body);
+    //    return msg;
+    //}
 }

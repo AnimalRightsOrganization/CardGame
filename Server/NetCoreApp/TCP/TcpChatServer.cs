@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Diagnostics;
 using NetCoreServer;
+using NetCoreServer.Utils;
 
 namespace TcpChatServer
 {
@@ -27,15 +28,42 @@ namespace TcpChatServer
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
-            string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
-            Debug.Print("Incoming: " + message);
+            CSID header = (CSID)buffer[0];
+            byte[] body = new byte[buffer.Length - 1];
+            Array.Copy(buffer, 1, body, 0, buffer.Length - 1);
+            Debug.Print($"[C2S] {header}");
+
+            switch (header)
+            {
+                case CSID.C2SRegister:
+                    break;
+                case CSID.C2SLogin:
+                    var packet = ProtobufferTool.Deserialize<Login>(body);
+                    Debug.Print($"[C2SLogin] {packet.Username}, {packet.Password}");
+
+                    // 查询MongoDB，返回结果
+                    uint dbCode = DBTools.QueryLogin(packet.Username, packet.Password);
+                    Debug.Print($"db查询结果={dbCode}");
+
+                    var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = "000000" };
+                    byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
+                    SendAsync(loginData);
+                    break;
+                default: //处理成文本
+                    string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
+                    Debug.Print($"Server Received: {message}");
+                    break;
+            }
+
+            //string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
+            //Debug.Print("Incoming: " + message);
 
             // Multicast message to all connected sessions
-            Server.Multicast(message);
+            //Server.Multicast(message);
 
             // If the buffer starts with '!' the disconnect the current session
-            if (message == "!")
-                Disconnect();
+            //if (message == "!")
+            //    Disconnect();
         }
 
         protected override void OnError(SocketError error)
@@ -75,7 +103,7 @@ namespace TcpChatServer
             server.Start();
             Debug.Print("Done!");
 
-            Debug.Print("Press Enter to stop the server or '!' to restart the server...");
+            //Debug.Print("Press Enter to stop the server or '!' to restart the server...");
 
             /*
             // Perform text input

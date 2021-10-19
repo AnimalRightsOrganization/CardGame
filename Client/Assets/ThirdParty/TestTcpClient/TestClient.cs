@@ -44,7 +44,7 @@ public class TestClient : MonoBehaviour
         //Debug.Log($"Send: {input.text}");
 
         Login login = new Login { Username = "abc", Password = input.text };
-        byte[] buffer = ProtobufferTool.Serialize(login);
+        byte[] buffer = ProtobufferTool.PackMessage(CSID.C2SLogin, login);
         client.SendAsync(buffer);
     }
 }

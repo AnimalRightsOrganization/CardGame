@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+//package google.protobuf;
+
+message LoginResult {
+  uint32 code = 1;		//登录结果（0：成功，101：密码错误）
+  string username = 2; 	//用户信息，用户名
+  string token = 3;		//令牌
+}

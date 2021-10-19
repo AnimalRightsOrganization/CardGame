@@ -45,5 +45,7 @@ public class DebugTools : Editor
         m_Process.StartInfo.WorkingDirectory = root;
         m_Process.StartInfo.FileName = "generate_proto.bat";
         m_Process.Start();
+
+        AssetDatabase.Refresh();
     }
 }

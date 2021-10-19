@@ -55,12 +55,20 @@ namespace TcpChatClient
                 case SCID.S2CRegister:
                     break;
                 case SCID.S2CLogin:
-                    var msg = ProtobufferTool.Deserialize<Login>(body);
-                    Debug.Log($"[S2C] {msg.Username}, {msg.Password}");
+                    var packet = ProtobufferTool.Deserialize<LoginResult>(body);
+                    Debug.Log($"[S2C] Code={packet.Code}, Username={packet.Username}, Token={packet.Token}");
+                    if (packet.Code == 0)
+                    {
+                        Debug.Log("<color=green>登录成功</color>");
+                    }
+                    else
+                    {
+                        Debug.LogError("登录失败");
+                    }
                     break;
                 default: //处理成文本
-                    Debug.Log("Client Received Sth. ...");
-                    Debug.Log(Encoding.UTF8.GetString(buffer, (int)offset, (int)size));
+                    string message = Encoding.UTF8.GetString(buffer, (int)offset, (int)size);
+                    Debug.Log($"Client Received: {message}");
                     break;
             }
         }

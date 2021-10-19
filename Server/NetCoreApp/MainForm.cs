@@ -20,7 +20,6 @@ namespace WinFormsApp1
             this.SizeChanged += new EventHandler(Form1_SizeChanged);
             this.notifyIcon1.MouseClick += new MouseEventHandler(notifyIcon1_MouseClick);
             this.notifyIcon1.DoubleClick += new EventHandler(notifyIcon1_DoubleClick);
-
             //Debug.Print("count---" + this.notifyIcon1.ContextMenuStrip.Items.Count);
             //Debug.Print("0---" + this.notifyIcon1.ContextMenuStrip.Items[0].Name);
             //Debug.Print("1---" + this.notifyIcon1.ContextMenuStrip.Items[1].Name);
