@@ -156,7 +156,13 @@ public class LogicManager : MonoBehaviour
     }
 
     // 手牌排序
-    public void Sort()
+    public void SortHandCard()
+    {
+
+    }
+
+    // 手牌显示
+    public void ShowHandCard()
     {
 
     }

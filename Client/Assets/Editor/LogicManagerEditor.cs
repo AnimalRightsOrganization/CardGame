@@ -24,7 +24,11 @@ public class LogicManagerEditor : Editor
         }
         if (GUILayout.Button("手牌排序", GUILayout.Height(25)))
         {
-            demo.Sort();
+            demo.SortHandCard();
+        }
+        if (GUILayout.Button("手牌显示", GUILayout.Height(25)))
+        {
+            demo.ShowHandCard();
         }
     }
 }
