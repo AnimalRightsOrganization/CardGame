@@ -39,7 +39,7 @@ public class LogicManager : MonoBehaviour
     public int nextTurn = 0; //流程控制，当前出牌玩家id
 
     BotDatabase botDatabase;
-    [SerializeField, Range(2, 4)] int playerCount; //本局玩家数，开房间时确定
+    [SerializeField, Range(2, 4)] int playerCount = 3; //本局玩家数，开房间时确定
     [SerializeField] List<CardAttribute> libraryList = new List<CardAttribute>(); //牌库
     [SerializeField] List<CardAttribute> deskList = new List<CardAttribute>(); //桌上的牌
     [SerializeField] List<GamePlayer> playerList = new List<GamePlayer>(); //手牌

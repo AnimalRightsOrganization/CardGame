@@ -193,7 +193,7 @@ public partial class BundleTools : Editor
     private static string getBundleName(FileInfo fileInfo, string typeName)
     {
         string windowPath = fileInfo.FullName;
-        string unityPath = windowPath.Replace(@"\", "/"); //转斜杠 C:/Users/Administrator/Documents/GitHub/AssetBundleExample/Assets/Sources/Textures/trash_2.jpg
+        string unityPath = windowPath.Replace(@"\", "/"); //转斜杠
 
         int Index = unityPath.IndexOf(typeName) + typeName.Length;
         string bundlePath = unityPath.Substring(Index + 1);

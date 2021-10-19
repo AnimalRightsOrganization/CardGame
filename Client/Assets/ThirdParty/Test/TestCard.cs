@@ -17,11 +17,12 @@ public class TestCard : MonoBehaviour
     static Dictionary<string, Sprite> atlasCardfront = new Dictionary<string, Sprite>();
     static void Loadcardfrontatlasnamed()
     {
-        Sprite[] sprites = Resources.LoadAll<Sprite>($"Textures/sprite");
+        Sprite[] sprites = Resources.LoadAll<Sprite>($"Sprites/cards");
         atlasCardfront.Clear();
         foreach (Sprite asprite in sprites)
         {
             atlasCardfront[asprite.name] = asprite;
+            Debug.Log($"---{asprite.name}");
         }
         Debug.Log(atlasCardfront.Count);
     }
