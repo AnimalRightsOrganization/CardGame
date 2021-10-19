@@ -7,6 +7,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using MongoDB.Driver.Core;
 using MongoDB.Driver.Linq;
+using NetCoreServer.Utils;
 
 namespace WinFormsApp1
 {
@@ -229,12 +230,14 @@ namespace WinFormsApp1
 
         private void Button1_Click(object sender, System.EventArgs e)
         {
-            InsertUser();
+            //InsertUser();
+            DBTools.AddUser("test2", "123456");
         }
 
         private void Button2_Click(object sender, System.EventArgs e)
         {
-            DeleteUser();
+            //DeleteUser();
+            DBTools.DeleteUser("test1");
         }
 
         private void Button3_Click(object sender, System.EventArgs e)
@@ -272,13 +275,9 @@ namespace WinFormsApp1
         {
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase("stickerDB");
-            var collection = database.GetCollection<BsonDocument>("Users");
 
+            var collection = database.GetCollection<BsonDocument>("Users");
             var deleteFilter = Builders<BsonDocument>.Filter.Eq("number", 101);
-            //var filter = new BsonDocument
-            //{
-            //    { "number", 101 },
-            //};
             var result = collection.DeleteMany(deleteFilter);
             Debug.Print($"result={result.DeletedCount}");
         }
