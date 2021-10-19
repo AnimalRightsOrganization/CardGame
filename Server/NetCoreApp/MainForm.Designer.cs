@@ -78,7 +78,9 @@ namespace WinFormsApp1
             this.queryBtn = new System.Windows.Forms.Button();
             this.startServerBtn = new System.Windows.Forms.Button();
             this.shutDownBtn = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -146,7 +148,7 @@ namespace WinFormsApp1
             // 
             this.insertBtn.Location = new System.Drawing.Point(142, 225);
             this.insertBtn.Name = "insertBtn";
-            this.insertBtn.Size = new System.Drawing.Size(75, 23);
+            this.insertBtn.Size = new System.Drawing.Size(75, 24);
             this.insertBtn.TabIndex = 1;
             this.insertBtn.Text = "插入";
             this.insertBtn.UseVisualStyleBackColor = true;
@@ -156,7 +158,7 @@ namespace WinFormsApp1
             // 
             this.deleteBtn.Location = new System.Drawing.Point(142, 254);
             this.deleteBtn.Name = "deleteBtn";
-            this.deleteBtn.Size = new System.Drawing.Size(75, 23);
+            this.deleteBtn.Size = new System.Drawing.Size(75, 24);
             this.deleteBtn.TabIndex = 2;
             this.deleteBtn.Text = "删除";
             this.deleteBtn.UseVisualStyleBackColor = true;
@@ -166,7 +168,7 @@ namespace WinFormsApp1
             // 
             this.updateBtn.Location = new System.Drawing.Point(142, 283);
             this.updateBtn.Name = "updateBtn";
-            this.updateBtn.Size = new System.Drawing.Size(75, 23);
+            this.updateBtn.Size = new System.Drawing.Size(75, 24);
             this.updateBtn.TabIndex = 3;
             this.updateBtn.Text = "修改";
             this.updateBtn.UseVisualStyleBackColor = true;
@@ -176,7 +178,7 @@ namespace WinFormsApp1
             // 
             this.queryBtn.Location = new System.Drawing.Point(142, 312);
             this.queryBtn.Name = "queryBtn";
-            this.queryBtn.Size = new System.Drawing.Size(75, 23);
+            this.queryBtn.Size = new System.Drawing.Size(75, 24);
             this.queryBtn.TabIndex = 4;
             this.queryBtn.Text = "查询";
             this.queryBtn.UseVisualStyleBackColor = true;
@@ -186,7 +188,7 @@ namespace WinFormsApp1
             // 
             this.startServerBtn.Location = new System.Drawing.Point(132, 357);
             this.startServerBtn.Name = "startServerBtn";
-            this.startServerBtn.Size = new System.Drawing.Size(94, 23);
+            this.startServerBtn.Size = new System.Drawing.Size(94, 24);
             this.startServerBtn.TabIndex = 5;
             this.startServerBtn.Text = "启动服务器";
             this.startServerBtn.UseVisualStyleBackColor = true;
@@ -196,17 +198,27 @@ namespace WinFormsApp1
             // 
             this.shutDownBtn.Location = new System.Drawing.Point(132, 386);
             this.shutDownBtn.Name = "shutDownBtn";
-            this.shutDownBtn.Size = new System.Drawing.Size(94, 23);
+            this.shutDownBtn.Size = new System.Drawing.Size(94, 24);
             this.shutDownBtn.TabIndex = 6;
-            this.shutDownBtn.Text = "关闭服务器";
+            this.shutDownBtn.Text = "停止服务器";
             this.shutDownBtn.UseVisualStyleBackColor = true;
             this.shutDownBtn.Click += new System.EventHandler(this.ShutDownBtn_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::NetCoreServer.Properties.Resources.server_red_x16;
+            this.pictureBox1.Location = new System.Drawing.Point(98, 364);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(367, 665);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.shutDownBtn);
             this.Controls.Add(this.insertBtn);
             this.Controls.Add(this.deleteBtn);
@@ -218,6 +230,7 @@ namespace WinFormsApp1
             this.Text = "Winform+NetCore3.1+MongoDB";
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -368,13 +381,19 @@ namespace WinFormsApp1
             Debug.Print("启动服务器");
 
             TcpChatServer.TCPChatServer.Run();
+
+            var greenDot = global::NetCoreServer.Properties.Resources.server_green_x16;
+            this.pictureBox1.Image = greenDot;
         }
 
         private void ShutDownBtn_Click(object sender, System.EventArgs e)
         {
-            Debug.Print("关闭服务器");
+            Debug.Print("停止服务器");
 
             TcpChatServer.TCPChatServer.Stop();
+
+            var redDot = global::NetCoreServer.Properties.Resources.server_red_x16;
+            this.pictureBox1.Image = redDot;
         }
 
         #endregion
@@ -393,5 +412,6 @@ namespace WinFormsApp1
         private Button queryBtn;
         private Button startServerBtn;
         private Button shutDownBtn;
+        private PictureBox pictureBox1;
     }
 }
