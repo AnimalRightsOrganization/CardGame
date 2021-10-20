@@ -31,7 +31,7 @@ public class TestCard : MonoBehaviour
     [ContextMenu("ChangeCard")]
     void Change()
     {
-        string card_name = $"{CardAttribute.colors}_{(int)CardAttribute.weight}";
+        string card_name = $"{CardAttribute.colors}_{(int)CardAttribute.weight % 14}";
         Debug.Log(card_name);
         var sp = atlasCardfront[card_name];
         prefab.sprite = sp;

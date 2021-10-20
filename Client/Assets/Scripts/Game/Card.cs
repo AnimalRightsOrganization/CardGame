@@ -67,10 +67,10 @@ public enum Weight
     Jack    = 11,
     Queen   = 12,
     King    = 13,
-    Ace     = 14,
-    Two     = 15,
-    SJoker  = 16,
-    BJoker  = 17,
+    Ace     = 15,
+    Two     = 16,
+    SJoker  = 17,
+    BJoker  = 18,
 }
 
 /// <summary>
