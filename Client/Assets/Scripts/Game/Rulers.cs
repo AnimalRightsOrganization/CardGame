@@ -268,5 +268,35 @@ public static class Rulers
     {
         return null;
     }
+
+    // 连对
+    public static List<CardAttribute> doDoubleMore(List<CardAttribute> handCards)
+    {
+        return null;
+    }
+
+    // 三带二
+    public static List<CardAttribute> doThreeWithTwo(List<CardAttribute> handCards)
+    {
+        return null;
+    }
+
+    // 飞机
+    public static List<CardAttribute> doAirplane(List<CardAttribute> handCards)
+    {
+        return null;
+    }
+
+    // 顺子
+    public static List<CardAttribute> doStraight(List<CardAttribute> handCards)
+    {
+        return null;
+    }
+
+    // 炸弹
+    public static List<CardAttribute> doBomb(List<CardAttribute> handCards)
+    {
+        return null;
+    }
     #endregion
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+#if UNITY_EDITOR
 using UnityEditor;
 [CustomEditor(typeof(TestCard))]
 public class TestCardEditor : Editor
@@ -35,7 +35,7 @@ public class TestCardEditor : Editor
         }
     }
 }
-
+#endif
 public class TestCard : MonoBehaviour
 {
     public Transform root;
@@ -123,6 +123,9 @@ public class TestCard : MonoBehaviour
             cardObj.name = $"card_{i}";
             cardObj.rectTransform.anchoredPosition += Vector2.right * 25 * i + startPos;
             cardObj.gameObject.SetActive(true);
+
+            var script = cardObj.GetComponent<ItemCard>();
+            script.InitData(card);
 
             string card_name = $"{card.colors}_{(int)card.weight % 14}";
             var sp = atlasCardfront[card_name];
