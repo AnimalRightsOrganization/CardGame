@@ -60,12 +60,19 @@ public static class Rulers
     // 三带二（≥3张同点数，带任意两张杂牌，33344，33357等）
     public static bool isThreeWithTwo(List<CardAttribute> cards)
     {
+        //①一定是5张牌
+        if (cards.Count != 5)
+            return false;
+
+        //②有且只有三张相等
+
         return false;
     }
 
     // 飞机（≥2种点数连续的三同张，带同样数量对子，如33344455577JJKK等）
     public static bool isAirplane(List<CardAttribute> cards)
     {
+
         return false;
     }
 
@@ -80,7 +87,7 @@ public static class Rulers
             if (cards[i + 1].weight - tempWeight != 1)
                 return false;
 
-            //不能超过A
+            //不能超过A。二只有一张，必须单出。
             if (tempWeight > Weight.Ace || cards[i + 1].weight > Weight.Ace)
                 return false;
         }

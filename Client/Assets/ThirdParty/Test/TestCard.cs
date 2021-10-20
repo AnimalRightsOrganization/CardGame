@@ -19,7 +19,7 @@ public class TestCardEditor : Editor
         }
         if (GUILayout.Button("手牌排序", GUILayout.Height(25)))
         {
-            demo.SortCard();
+            demo.SortHandCard();
         }
         if (GUILayout.Button("显示手牌", GUILayout.Height(25)))
         {
@@ -61,6 +61,7 @@ public class TestCard : MonoBehaviour
         Loadcardfrontatlasnamed();
     }
 
+    // 改变单张
     public void ChangeSingle()
     {
         var card = handCards[0];
@@ -69,7 +70,8 @@ public class TestCard : MonoBehaviour
         prefab.sprite = sp;
     }
 
-    public void SortCard()
+    // 手牌排序
+    public void SortHandCard()
     {
         //System.Comparison<CardAttribute> comp1 = (x, y) => x.weight.CompareTo(y.weight);
         //System.Comparison<CardAttribute> comp2 = (x, y) => x.colors.CompareTo(y.colors);
@@ -149,6 +151,7 @@ public class TestCard : MonoBehaviour
         }
     }
 
+    // 牌型检测
     public void CheckType()
     {
         //bool res1 = Rulers.isSingle(handCards);
