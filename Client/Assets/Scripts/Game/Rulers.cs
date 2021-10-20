@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Linq;
 using System.Collections.Generic;
 using Debug = UnityEngine.Debug;
 
@@ -57,20 +57,68 @@ public static class Rulers
         return condition;
     }
 
-    // 三带二（≥3张同点数，带任意两张杂牌，33344，33357等）
-    public static bool isThreeWithTwo(List<CardAttribute> cards)
+    // 三带二（=3张同点数，带任意两张杂牌，33344，33357等）
+    public static bool isThreeWithTwo(List<CardAttribute> cards, bool withTwo = true)
     {
-        //①一定是5张牌
-        if (cards.Count != 5)
-            return false;
+        // 不需要带牌时
+        if (withTwo == false)
+        {
+            //①3张或4张牌
+            if (cards.Count < 3 || cards.Count > 4)
+                return false;
+        }
+        else
+        {
+            if (cards.Count != 5)
+                return false;
+        }
 
-        //②有且只有三张相等
+        //②排序
+        cards.Sort((x, y) => ((int)x.weight).CompareTo((int)y.weight)); //升序排列
+                                                                        //③分类
+        Dictionary<Weight, List<CardAttribute>> tmp = new Dictionary<Weight, List<CardAttribute>>(); //全部点数，2种或3种
+        for (int i = 0; i < cards.Count; i++)
+        {
+            var card = cards[i];
+            var cardValue = card.weight;
+            if (tmp.ContainsKey(cardValue) == false)
+            {
+                var lst = new List<CardAttribute>();
+                lst.Add(card);
+                tmp.Add(cardValue, lst);
+            }
+            else
+            {
+                var lst = tmp[cardValue];
+                lst.Add(card);
+            }
+        }
+        Debug.Log($"{tmp.Keys.Count}种点数");
 
-        return false;
+        bool cond1 = false;
+        if (withTwo == false)
+        {
+            cond1 = tmp.Keys.Count == 1 || tmp.Keys.Count == 2; //总共有一组或两组
+        }
+        else
+        {
+            cond1 = tmp.Keys.Count == 2 || tmp.Keys.Count == 3; //总共有两组或三组
+        }
+        bool cond2 = false; //其中一组有3个元素
+        foreach (var item in tmp)
+        {
+            Debug.Log($"{item.Key}---{item.Value.Count}");
+            if (item.Value.Count == 3)
+            {
+                cond2 = true;
+                break;
+            }
+        }
+        return cond1 && cond2;
     }
 
     // 飞机（≥2种点数连续的三同张，带同样数量对子，如33344455577JJKK等）
-    public static bool isAirplane(List<CardAttribute> cards)
+    public static bool isAirplane(List<CardAttribute> cards, bool withTwo = true)
     {
 
         return false;
