@@ -2,7 +2,10 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
 using NetCoreServer;
 using NetCoreServer.Utils;
 
@@ -20,7 +23,7 @@ namespace TcpChatServer
             string message = "Hello from TCP chat! Please send a message or '!' to disconnect the client!";
             SendAsync(message);
 
-            TCPChatServer.playerManager.AddPlayer(Id, "guest");
+            TCPChatServer.m_Server.playerManager.AddPlayer(Id, "guest");
         }
 
         protected override void OnDisconnected()
@@ -53,7 +56,7 @@ namespace TcpChatServer
                             byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
                             SendAsync(loginData);
 
-                            TCPChatServer.playerManager.UpdatePlayer(Id, packet.Username);
+                            TCPChatServer.m_Server.playerManager.UpdatePlayer(Id, packet.Username);
                         }
                         else
                         {
@@ -78,7 +81,7 @@ namespace TcpChatServer
 
                         if (dbCode == 0)
                         {
-                            TCPChatServer.playerManager.UpdatePlayer(Id, packet.Username); //登陆成功，更新服务器用户管理数据
+                            TCPChatServer.m_Server.playerManager.UpdatePlayer(Id, packet.Username); //登陆成功，更新服务器用户管理数据
                         }
                     }
                     break;
@@ -87,10 +90,12 @@ namespace TcpChatServer
                         var packet = ProtobufferTool.Deserialize<EmptyPacket>(body);
 
                         // 空消息判断来源
-                        string username = TCPChatServer.playerManager.GetUsernameByGuid(Id);
+                        string username = TCPChatServer.m_Server.playerManager.GetUsernameByGuid(Id);
                         Debug.Print($"匹配请求，来自：{username}");
 
-                        //TODO: 加入匹配队列
+                        // 加入匹配队列
+                        //lock (TCPChatServer.m_Server.waitingPlayers)
+                        //    TCPChatServer.m_Server.waitingPlayers.Add(Id);
                     }
                     break;
                 default: //处理成文本
@@ -126,13 +131,73 @@ namespace TcpChatServer
         {
             Debug.Print($"Chat TCP server caught an error with code {error}");
         }
+
+        public ServerPlayerManager playerManager;
+
+        public List<Guid> waitingPlayers = new List<Guid>(); //排队匹配玩家
+        private CancellationTokenSource tokenSource;
+        private CancellationToken token;
+        private ManualResetEvent resetEvent;
+        public void StartMatchTask()
+        {
+            tokenSource = new CancellationTokenSource();
+            token = tokenSource.Token;
+            resetEvent = new ManualResetEvent(true);
+            var matchLoop = new Task(async () =>
+            {
+                for (; ; )
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    // 初始化为true时执行WaitOne不阻塞
+                    resetEvent.WaitOne();
+
+                    // Doing something.......
+                    DoMatch();
+
+                    // 模拟等待3000ms
+                    await Task.Delay(3000);
+                }
+            }, token);
+            matchLoop.Start();
+        }
+        public void CancelMatchTask()
+        {
+            tokenSource?.Cancel();
+        }
+        private void DoMatch()
+        {
+            lock (waitingPlayers)
+            {
+                if (waitingPlayers.Count < 3)
+                {
+                    Debug.Print($"人数不足：{waitingPlayers.Count}");
+                    return; //人数不足
+                }
+                // 取出三个人对局
+                var p1 = waitingPlayers[0];
+                var p2 = waitingPlayers[1];
+                var p3 = waitingPlayers[2];
+
+                //TODO: 通知他们开局。
+
+                // 移除列表
+                waitingPlayers.Remove(p1);
+                waitingPlayers.Remove(p2);
+                waitingPlayers.Remove(p3);
+
+                //TODO: 服务器比赛类初始化。
+            }
+        }
     }
 
     public class TCPChatServer
     {
         protected static ChatServer server;
-
-        public static ServerPlayerManager playerManager;
+        public static ChatServer m_Server { get { return server; } }
 
         public static void Run()
         {
@@ -150,7 +215,8 @@ namespace TcpChatServer
             Debug.Print("Done!");
 
             //Debug.Print("Press Enter to stop the server or '!' to restart the server...");
-            playerManager = new ServerPlayerManager();
+            server.playerManager = new ServerPlayerManager();
+            //server.StartMatchTask();
 
             /*
             // Perform text input
@@ -187,6 +253,7 @@ namespace TcpChatServer
             Debug.Print("Server stopping...");
             server.Stop();
             Debug.Print("Done!");
+            //server.CancelMatchTask();
         }
     }
 }
