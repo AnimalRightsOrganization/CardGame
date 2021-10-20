@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Consts
 {
     /// <summary>
     /// 游戏数据路径
     /// </summary>
-    //跨平台都存在，可以读写的路径
     public static readonly string DataPath = Application.persistentDataPath + @"\data.xml";
 }
 
@@ -71,6 +71,13 @@ public class DBPlayer
     //public string nickname;
     //public string gender;
     //public string headimg;
+}
+// 牌局玩家属性
+[System.Serializable]
+public class ClientPlayer : DBPlayer
+{
+    public int SeatID; //这盘中的顺位
+    public List<CardAttribute> HandCards = new List<CardAttribute>(); //手牌List
 }
 
 public enum AvatarModel

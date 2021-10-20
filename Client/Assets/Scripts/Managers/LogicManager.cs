@@ -12,7 +12,7 @@ public class LogicManager : MonoBehaviour
 
     BotDatabase botDatabase;
     [SerializeField, Range(2, 4)] int playerCount = 3; //本局玩家数，开房间时确定
-    [SerializeField] List<GamePlayer> playerList = new List<GamePlayer>(); //玩家
+    [SerializeField] List<ClientPlayer> playerList = new List<ClientPlayer>(); //玩家
     [SerializeField] List<CardAttribute> libraryList = new List<CardAttribute>(); //牌库
     private int rollIndex;
 
@@ -51,7 +51,7 @@ public class LogicManager : MonoBehaviour
         playerList.Clear();
         for (int i = 0; i < playerCount; i++)
         {
-            GamePlayer player = new GamePlayer()
+            ClientPlayer player = new ClientPlayer()
             {
                 SeatID = i,
                 user_id = botDatabase.botList[resultArray[i]].user_id,
@@ -166,64 +166,4 @@ public class LogicManager : MonoBehaviour
     {
 
     }
-}
-
-// 牌面属性
-[System.Serializable]
-public class CardAttribute
-{
-    public int cardid; //0~52序号（大小王去掉）
-    //public int value; //JQK对应的值11，12，13
-	public Colors colors; //花色
-    public Weight weight; //牌面点数
-
-    // 根据id，序列化牌面属性
-    public void SerializeCard()
-    {
-        if (this.cardid <= 13)
-        {
-            this.colors = Colors.Spade;
-            this.weight = (Weight)(this.cardid % 14); //1-13
-        }
-        else if (this.cardid > 13 && this.cardid <= 26)
-        {
-            this.colors = Colors.Heart;
-            this.weight = (Weight)(this.cardid % 14);
-        }
-        else if (this.cardid > 26 && this.cardid <= 39)
-        {
-            this.colors = Colors.Club;
-            this.weight = (Weight)(this.cardid % 14);
-        }
-        else if (this.cardid > 39 && this.cardid <= 52)
-        {
-            this.colors = Colors.Square;
-            this.weight = (Weight)(this.cardid % 14);
-        }
-        /*
-        else if (this.cardid == 53) //53,54
-        {
-            this.colors = Colors.King;
-            this.weight = Weight.SJoker;
-            this.value = 10;
-        }
-        else if (this.cardid == 54) //53,54
-        {
-            this.colors = Colors.King;
-            this.weight = Weight.BJoker;
-            this.value = 10;
-        }*/
-    }
-    public override string ToString()
-    {
-        return $"{colors}_{weight}:{cardid}";
-    }
-}
-
-// 牌局玩家属性
-[System.Serializable]
-public class GamePlayer : DBPlayer
-{
-    public int SeatID; //这盘中的顺位
-    public List<CardAttribute> HandCards = new List<CardAttribute>(); //手牌List
 }

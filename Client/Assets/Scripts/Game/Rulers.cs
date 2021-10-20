@@ -8,7 +8,7 @@ public static class Rulers
     /// </summary>
     /// <param name="cards">选择的手牌</param>
     /// <returns></returns>
-    public static bool isSingle(List<Card> cards)
+    public static bool isSingle(List<CardAttribute> cards)
     {
         if (cards.Count == 1) return true;
         else return false;
@@ -19,11 +19,11 @@ public static class Rulers
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool isDouble(List<Card> cards)
+    public static bool isDouble(List<CardAttribute> cards)
     {
         if (cards.Count == 2)
         {
-            if (cards[0].CardWeight == cards[1].CardWeight)
+            if (cards[0].weight == cards[1].weight)
             {
                 return true; //已经return就不会往下走
             }
@@ -36,18 +36,18 @@ public static class Rulers
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool isStraight(List<Card> cards)
+    public static bool isStraight(List<CardAttribute> cards)
     {
         if (cards.Count < 5 || cards.Count > 12) return false;
 
         for (int i = 0; i < cards.Count; i++)
         {
-            Weight tempWeight = cards[i].CardWeight;
-            if (cards[i + 1].CardWeight - tempWeight != 1)
+            Weight tempWeight = cards[i].weight;
+            if (cards[i + 1].weight - tempWeight != 1)
                 return false;
             
             //不能超过A
-            if (tempWeight > Weight.One || cards[i+1].CardWeight > Weight.One)
+            if (tempWeight > Weight.One || cards[i+1].weight > Weight.One)
                 return false;
         }
 
@@ -59,19 +59,19 @@ public static class Rulers
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool isDoubleStraight(List<Card> cards)
+    public static bool isDoubleStraight(List<CardAttribute> cards)
     {
         if (cards.Count < 6 || cards.Count % 2 != 0)
             return false;
 
         for (int i = 0; i < cards.Count; i += 2)
         {
-            if (cards[i].CardWeight != cards[i + 1].CardWeight)
+            if (cards[i].weight != cards[i + 1].weight)
                 return false;
-            if (cards[i + 2].CardWeight - cards[i].CardWeight != 1)
+            if (cards[i + 2].weight - cards[i].weight != 1)
                 return false;
             //不能超过A
-            if (cards[i].CardWeight > Weight.One || cards[i + 2].CardWeight > Weight.One)
+            if (cards[i].weight > Weight.One || cards[i + 2].weight > Weight.One)
                 return false;
         }
         return true;
@@ -82,7 +82,7 @@ public static class Rulers
     /// </summary>
     /// <param name="cards"></param>
     /// <returns></returns>
-    public static bool isTripleStraight(List<Card> cards)
+    public static bool isTripleStraight(List<CardAttribute> cards)
     {
         if (cards.Count < 6 || cards.Count % 3 != 0)
             return false;
@@ -90,19 +90,19 @@ public static class Rulers
         for (int i = 0; i < cards.Count; i += 3)
         {
             //三张牌相互判断相等
-            if (cards[i].CardWeight != cards[i + 1].CardWeight)
+            if (cards[i].weight != cards[i + 1].weight)
                 return false;
-            if (cards[i + 2].CardWeight != cards[i+1].CardWeight)
+            if (cards[i + 2].weight != cards[i+1].weight)
                 return false;
-            if (cards[i].CardWeight != cards[i + 2].CardWeight)
+            if (cards[i].weight != cards[i + 2].weight)
                 return false;
 
             //权值差
-            if (cards[i + 3].CardWeight - cards[i].CardWeight != 1)
+            if (cards[i + 3].weight - cards[i].weight != 1)
                 return false;
 
             //不能超过A
-            if (cards[i].CardWeight > Weight.One || cards[i + 2].CardWeight > Weight.One)
+            if (cards[i].weight > Weight.One || cards[i + 2].weight > Weight.One)
                 return false;
         }
         return true;
