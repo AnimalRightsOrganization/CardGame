@@ -95,7 +95,7 @@ public class LogicManager : MonoBehaviour
         // 去掉三张2，一张A。
         Debug.Log($"去掉前，牌库：{libraryList.Count}"); //52
         int TwoCount = 3;
-        int OneCount = 1;
+        int AceCount = 1;
         for (int i = 0; i < libraryList.Count; i++)
         {
             var card = libraryList[i];
@@ -105,9 +105,9 @@ public class LogicManager : MonoBehaviour
                 libraryList.Remove(card);
                 Debug.Log($"<color=red>去掉：{card.ToString()}</color>");
             }
-            if (card.weight == Weight.One && OneCount > 0)
+            if (card.weight == Weight.Ace && AceCount > 0)
             {
-                OneCount--;
+                AceCount--;
                 libraryList.Remove(card);
                 Debug.Log($"<color=red>去掉：{card.ToString()}</color>");
             }

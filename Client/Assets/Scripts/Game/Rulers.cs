@@ -47,7 +47,7 @@ public static class Rulers
                 return false;
             
             //不能超过A
-            if (tempWeight > Weight.One || cards[i+1].weight > Weight.One)
+            if (tempWeight > Weight.Ace || cards[i+1].weight > Weight.Ace)
                 return false;
         }
 
@@ -71,7 +71,7 @@ public static class Rulers
             if (cards[i + 2].weight - cards[i].weight != 1)
                 return false;
             //不能超过A
-            if (cards[i].weight > Weight.One || cards[i + 2].weight > Weight.One)
+            if (cards[i].weight > Weight.Ace || cards[i + 2].weight > Weight.Ace)
                 return false;
         }
         return true;
@@ -102,7 +102,7 @@ public static class Rulers
                 return false;
 
             //不能超过A
-            if (cards[i].weight > Weight.One || cards[i + 2].weight > Weight.One)
+            if (cards[i].weight > Weight.Ace || cards[i + 2].weight > Weight.Ace)
                 return false;
         }
         return true;
