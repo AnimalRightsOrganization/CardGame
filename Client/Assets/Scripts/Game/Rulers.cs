@@ -22,7 +22,7 @@ public static class Rulers
         return false;
     }
 
-    // 连对，≥2种点数，3344，QQKKAA等。
+    // 连对（≥2种点数，3344，QQKKAA等）
     public static bool isDoubleMore(List<CardAttribute> cards)
     {
         //①一定是双数牌，至少4张
@@ -57,7 +57,19 @@ public static class Rulers
         return condition;
     }
 
-    // 顺子
+    // 三带二（≥3张同点数，带任意两张杂牌，33344，33357等）
+    public static bool isThreeWithTwo(List<CardAttribute> cards)
+    {
+        return false;
+    }
+
+    // 飞机（≥2种点数连续的三同张，带同样数量对子，如33344455577JJKK等）
+    public static bool isAirplane(List<CardAttribute> cards)
+    {
+        return false;
+    }
+
+    // 顺子（≥5张连续点数，10JQKA等）
     public static bool isStraight(List<CardAttribute> cards)
     {
         if (cards.Count < 5 || cards.Count > 12) return false;
@@ -76,7 +88,7 @@ public static class Rulers
         return true;
     }
 
-    // 炸弹
+    // 炸弹（≥4张相同牌，4444，77777等）
     public static bool isBomb(List<CardAttribute> cards)
     {
         if (cards.Count == 4)
