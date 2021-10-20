@@ -4,6 +4,7 @@ using Debug = UnityEngine.Debug;
 
 public static class Rulers
 {
+    #region 牌型检测（双端）
     // 单张
     public static bool isSingle(List<CardAttribute> cards)
     {
@@ -247,4 +248,25 @@ public static class Rulers
         }
         return false;
     }
+    #endregion
+
+    #region 推荐出牌（客户端）
+
+    //①被动跟牌，限定牌型、数量，出更大的牌。
+    //②主动出牌，（通过随机）确定好牌型，不需要比大小。
+
+    //通常可以得到多个结果，都推荐给玩家。
+
+    // 单张
+    public static List<CardAttribute> doSingle(List<CardAttribute> handCards)
+    {
+        return null;
+    }
+
+    // 对子
+    public static List<CardAttribute> doDouble(List<CardAttribute> handCards)
+    {
+        return null;
+    }
+    #endregion
 }
