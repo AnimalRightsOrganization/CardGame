@@ -54,7 +54,7 @@ public class LogicManager : MonoBehaviour
             ClientPlayer player = new ClientPlayer()
             {
                 SeatID = i,
-                user_id = botDatabase.botList[resultArray[i]].user_id,
+                username = botDatabase.botList[resultArray[i]].username,
                 avatar = (AvatarModel)resultArray[i],
                 money = botDatabase.botList[resultArray[i]].money
             };
