@@ -86,9 +86,9 @@ public class UI_Login : UIBase
         {
             case SCID.S2CRegister:
                 {
-                    var packet = ProtobufferTool.Deserialize<RegisterError>(body);
+                    var packet = ProtobufferTool.Deserialize<ErrorPacket>(body);
                     Debug.Log($"[{header}] Code={packet.Code}");
-                    if (packet.Code == 100)
+                    if ((ErrorCode)packet.Code == ErrorCode.UserNameUsed)
                     {
                         Debug.LogError("注册失败，用户名已存在");
                         var ui = UIManager.GetInstance().Push<UI_Toast>();

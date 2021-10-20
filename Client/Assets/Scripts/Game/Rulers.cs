@@ -260,6 +260,8 @@ public static class Rulers
     // 单张
     public static List<CardAttribute> doSingle(List<CardAttribute> handCards)
     {
+        //handCards.Count 种结果，放在列表中返给玩家
+
         return null;
     }
 

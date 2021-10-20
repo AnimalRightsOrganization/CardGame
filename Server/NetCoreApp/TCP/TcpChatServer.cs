@@ -57,9 +57,8 @@ namespace TcpChatServer
                         }
                         else
                         {
-                            //TODO: 统一使用错误码
-                            var registError = new RegisterError { Code = dbCode };
-                            byte[] registData = ProtobufferTool.PackMessage(SCID.S2CRegister, registError);
+                            var errorPacket = new ErrorPacket { Code = (uint)ErrorCode.UserNameUsed };
+                            byte[] registData = ProtobufferTool.PackMessage(SCID.S2CRegister, errorPacket);
                             SendAsync(registData);
                         }
                     }
@@ -73,17 +72,13 @@ namespace TcpChatServer
                         uint dbCode = DBTools.QueryLogin(packet.Username, packet.Password);
                         Debug.Print($"db查询结果={dbCode}");
 
+                        var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = Id.ToString() };
+                        byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
+                        SendAsync(loginData);
+
                         if (dbCode == 0)
                         {
-                            var loginResult = new LoginResult { Code = dbCode, Username = packet.Username, Token = Id.ToString() };
-                            byte[] loginData = ProtobufferTool.PackMessage(SCID.S2CLogin, loginResult);
-                            SendAsync(loginData);
-
-                            TCPChatServer.playerManager.UpdatePlayer(Id, packet.Username);
-                        }
-                        else
-                        {
-                            //TODO: 统一使用错误码
+                            TCPChatServer.playerManager.UpdatePlayer(Id, packet.Username); //登陆成功，更新服务器用户管理数据
                         }
                     }
                     break;

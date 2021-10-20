@@ -1,15 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using DG.Tweening;
 
 public class ItemCard : MonoBehaviour, IPointerDownHandler
 {
     public CardAttribute m_Card;
     private RectTransform m_Rect;
     private Vector2 lastPos;
+    private bool IsRaised = false;
 
     public void InitData(CardAttribute _card)
     {
@@ -20,9 +19,17 @@ public class ItemCard : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log($"点击：{this.gameObject}。{m_Card.ToString()}");
+        Debug.Log($"点击：{m_Card.ToString()}");
 
-        m_Rect.anchoredPosition = lastPos + Vector2.up * 10;
+        if (IsRaised)
+        {
+            m_Rect.anchoredPosition = lastPos;
+        }
+        else
+        {
+            m_Rect.anchoredPosition = lastPos + Vector2.up * 10;
+        }
+        IsRaised = !IsRaised;
     }
 
     public void ResetPosition()

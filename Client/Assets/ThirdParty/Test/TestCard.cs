@@ -42,6 +42,7 @@ public class TestCard : MonoBehaviour
     public Image prefab;
 
     public List<CardAttribute> handCards = new List<CardAttribute>();
+    //public List<CardAttribute> getByCardID() { }
 
     static Dictionary<string, Sprite> atlasCardfront = new Dictionary<string, Sprite>();
     static void Loadcardfrontatlasnamed()
