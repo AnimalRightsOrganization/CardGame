@@ -163,11 +163,11 @@ public class TestCard : MonoBehaviour
         //bool res3 = Rulers.isDoubleMore(handCards);
         //Debug.Log($"连对：{res3}");
 
-        bool res4 = Rulers.isThreeWithTwo(handCards);
-        Debug.Log($"三带二：{res4}");
+        //bool res4 = Rulers.isThreeWithTwo(handCards);
+        //Debug.Log($"三带二：{res4}");
 
-        //bool res5 = Rulers.isAirplane(handCards);
-        //Debug.Log($"飞机：{res5}");
+        bool res5 = Rulers.isAirplane(handCards);
+        Debug.Log($"飞机：{res5}");
 
         //bool res6 = Rulers.isStraight(handCards);
         //Debug.Log($"顺子：{res6}");

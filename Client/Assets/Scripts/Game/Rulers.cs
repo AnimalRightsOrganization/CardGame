@@ -60,11 +60,10 @@ public static class Rulers
     // 三带二（=3张同点数，带任意两张杂牌，33344，33357等）
     public static bool isThreeWithTwo(List<CardAttribute> cards, bool withTwo = true)
     {
-        // 不需要带牌时
+        //①数量检测
         if (withTwo == false)
         {
-            //①3张或4张牌
-            if (cards.Count < 3 || cards.Count > 4)
+            if (cards.Count < 3 || cards.Count > 4) //3张或4张牌
                 return false;
         }
         else
@@ -75,7 +74,8 @@ public static class Rulers
 
         //②排序
         cards.Sort((x, y) => ((int)x.weight).CompareTo((int)y.weight)); //升序排列
-                                                                        //③分类
+        
+        //③分类
         Dictionary<Weight, List<CardAttribute>> tmp = new Dictionary<Weight, List<CardAttribute>>(); //全部点数，2种或3种
         for (int i = 0; i < cards.Count; i++)
         {
@@ -120,8 +120,95 @@ public static class Rulers
     // 飞机（≥2种点数连续的三同张，带同样数量对子，如33344455577JJKK等）
     public static bool isAirplane(List<CardAttribute> cards, bool withTwo = true)
     {
+        //①数量检测
+        if (withTwo)
+        {
+            if (!(cards.Count >= 10 && cards.Count % 5 == 0))
+                return false;
+        }
+        else
+        {
+            if (!(cards.Count >= 6 && cards.Count % 3 == 0))
+                return false;
+        }
 
-        return false;
+        //②排序
+        cards.Sort((x, y) => ((int)x.weight).CompareTo((int)y.weight)); //升序排列
+
+        //③检测三同张，检测连续
+        Dictionary<Weight, List<CardAttribute>> tmp = new Dictionary<Weight, List<CardAttribute>>(); //全部点数
+        List<Weight> tmpMain = new List<Weight>(); //三同张，保证同点数有3张
+        List<Weight> tmpSub = new List<Weight>(); //带牌，保证同点数有2张
+        for (int i = 0; i < cards.Count; i++)
+        {
+            var card = cards[i];
+            var cardValue = card.weight;
+            if (tmp.ContainsKey(cardValue) == false)
+            {
+                var lst = new List<CardAttribute>();
+                lst.Add(card);
+                tmp.Add(cardValue, lst);
+            }
+            else
+            {
+                var lst = tmp[cardValue];
+                lst.Add(card);
+            }
+        }
+        Debug.Log($"{tmp.Keys.Count}种点数");
+
+        if (withTwo)
+        {
+            foreach (var item in tmp)
+            {
+                if (item.Value.Count == 2)
+                {
+                    tmpSub.Add(item.Value.First().weight);
+                }
+                else if (item.Value.Count == 3)
+                {
+                    tmpMain.Add(item.Value.First().weight);
+                }
+                else
+                {
+                    return false; //数量只能是2张或3张
+                }
+            }
+            tmpMain.Sort((x, y) => x.CompareTo(y)); //升序排列
+            bool cond1 = (tmpMain.Count == tmpSub.Count); //三同张和对子数量一致
+            bool cond2 = true; //三同张连续
+            for (int i = 0; i < tmpMain.Count - 1; i++)
+            {
+                var curr = tmpMain[i];
+                var next = tmpMain[i + 1];
+                cond2 = cond2 && (curr + 1 == next);
+            }
+            return cond1 && cond2;
+        }
+        else
+        {
+            foreach (var item in tmp)
+            {
+                if (item.Value.Count == 3)
+                {
+                    tmpMain.Add(item.Value.First().weight);
+                }
+                else
+                {
+                    return false; //数量只能是2张或3张
+                }
+            }
+            tmpMain.Sort((x, y) => x.CompareTo(y)); //升序排列
+            //bool cond1 = (tmpMain.Count == tmpSub.Count); //三同张和对子数量一致
+            bool cond2 = true; //三同张连续
+            for (int i = 0; i < tmpMain.Count - 1; i++)
+            {
+                var curr = tmpMain[i];
+                var next = tmpMain[i + 1];
+                cond2 = cond2 && (curr + 1 == next);
+            }
+            return cond2;
+        }
     }
 
     // 顺子（≥5张连续点数，10JQKA等）
