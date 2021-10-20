@@ -9,21 +9,8 @@ public class Consts
     public static readonly string DataPath = Application.persistentDataPath + @"\data.xml";
 }
 
-//summary可以再鼠标悬停时显示提示。
-/// <summary> 
-/// 角色类型
-/// </summary>
-public enum CharacterType
-{
-    Library = 0, //牌库
-    Player = 1, //玩家
-    ComputerRight = 2, //电脑1
-    ComputerLeft = 3, //电脑2
-    Desk = 4, //桌子
-}
-
 /// <summary>
-/// 卡牌花色
+/// 花色
 /// </summary>
 public enum Colors //黑桃>红桃>梅花>方块
 {
@@ -35,7 +22,7 @@ public enum Colors //黑桃>红桃>梅花>方块
 }
 
 /// <summary>
-/// 卡牌权值 2,3,4,5,6,7,8,9,10,J,Q,K,A,2,SmallJoker,BigJoker
+/// 权值 2,3,4,5,6,7,8,9,10,J,Q,K,A,2,SmallJoker,BigJoker
 /// </summary>
 public enum Weight
 {
@@ -57,7 +44,7 @@ public enum Weight
 }
 
 /// <summary>
-/// 出牌类型
+/// 牌型
 /// </summary>
 public enum CardType
 {
