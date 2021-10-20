@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Debug = UnityEngine.Debug;
 
 public static class Rulers
 {
@@ -24,31 +25,35 @@ public static class Rulers
     // 连对，≥2种点数，3344，QQKKAA等。
     public static bool isDoubleMore(List<CardAttribute> cards)
     {
-        //①一定是双数牌
-        if (cards.Count % 2 != 0)
+        //①一定是双数牌，至少4张
+        if (cards.Count % 2 != 0 || cards.Count < 4)
             return false;
 
         //②排序
         cards.Sort((x, y) => ((int)x.weight).CompareTo((int)y.weight)); //升序排列
 
         bool condition = true;
-
-        //③验证两张同点数
-        for (int i = 0; i < cards.Count; i += 2)
+        for (int i = 0; i < cards.Count / 2 - 1; i++)
         {
-            int t = i + 1;
-            bool cond = (cards[t].weight == cards[i].weight);
-            condition = condition && cond;
-        }
+            int index = i * 2;
 
-        //④验证连续
-        for (int i = 0; i < cards.Count; i += 2)
-        {
-            int t = i + 2;
-            bool cond = (cards[t].weight == cards[i].weight + 1);
-            condition = condition && cond;
-        }
+            var left = cards[index];
+            //Debug.Log($"left: {left.ToString()}");
+            var right = cards[index + 1];
+            //Debug.Log($"right: {right.ToString()}");
 
+            var nextLeft = cards[index + 2];
+            var nextRight = cards[index + 3];
+
+            //③验证两张同点数
+            bool cond1 = (left.weight == right.weight);
+            //④验证连续
+            bool cond2 = (left.weight + 1 == nextLeft.weight);
+            bool cond3 = (right.weight + 1 == nextRight.weight);
+
+            condition = condition && cond1 && cond2 && cond3;
+            //Debug.Log($"第{i + 1}轮检测：{cond1},{cond2},{cond3}");
+        }
         return condition;
     }
 
